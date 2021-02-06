@@ -62,12 +62,17 @@ For >16 ports, A4 could also be used if needed to decode up to 32 ports. Connect
 
 
 For Southern Cross SC-1:
-Ports 80h to 83h - uncommitted - availalbe on expansion connector
+Ports 80h to 83h - uncommitted - available on the I/O port expansion connector
 Port 84h - 7-seg segment select output
 Port 85h - 7-seg Display select & speaker (& JMON tape out) output
 Port 86h - Keyboard data input
 Port 87h - ???
 
+From Craig Jones, Designer of the SC-1:
+
+"The SC-1 uses ports 80 to 83 in the "I/O" port at the top of the board. The I/O port uses a 16 pin IDC to connect to the relay board or up to 2 8x8 displays.
+I didn't conceive of needing any more than 16 I/O ports so I used A6 and A7 one active low and one active high. This way just by connecting them the other way around I get the other 8 ports.
+I use port 87 to enable/disable the single stepper."
 
 Note that the SC-1 has the keyboard and 7-segment ports in a different order compared to the TEC.
 
