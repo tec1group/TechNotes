@@ -40,3 +40,19 @@ If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and dire
 
 I am not certain if JMON then stores the keyvalue or provides any direct keyboard routines -- please refer to jims notes && issue 15 page 24 for further insight.
 
+
+
+SC-1:
+
+The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder, however it also differs in that an external keyboard buffer chip is added. Also, the keyboard I/O port is port 86h on the SC-1.
+The FN, AD, + and - keys are in the opposite value-order compared to the TEC-1's AD, GO, + and - keys...another subtle design difference.
+The SC-1 does not have a SHIFT key.
+
+Port 86H:
+
+	Bits 0-4 are the same as the TEC, containing the scancode from the 74c923.
+	Bit 5   Logic 1 = 'key pressed'.
+	bit 6	Data IN2 pin
+	bit 7	Data IN1 pin
+
+The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, except it tests bit 5=1 to see if a key is being pressed (whereas JMON looks for bit 6=0).
