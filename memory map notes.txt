@@ -67,21 +67,32 @@ MON-1A additions:
 05B0h	- sequencer routine. See Issue 11, page 29.
 
 
+
 MON-1 RAM locations
 
-User RAM start	0800h
-Stack Pointer	0
+User RAM start				0800h
+Stack Pointer				0FD0h	Close to top of First 2k of RAM. Stack grows downwards until it overwrites user code.
+
+MON1 stores it's variables & stack at the top of the first 2k of RAM - 0Fxxh - meaning if a program uses all 2k, you need to 'leave a hole' here. A bug with stack routines (e.g. one PUSH too many)
+will see the stack eventually overwrite user code, hence corrupting the program in RAM and almost certainly crashing the machine and/or performing unexpected operations.
 
 
-MON2
+
+MON2 RAM locations
+
+MONitor variables and stack 0800h - 08FFh
+User RAM start				0900h
+Stack Pointer				08C0h	The stack grows downwards so is a maximum of C0 bytes in size.
+Address						08D8h	Current MONitor Address in 4 nibbles over 4 bytes
+Mode	           			08DFh	Monitor data entry mode (0 = Address Mode, 1 = Data Mode)
+Keyboard Buffer				08E0h	= ffh if no key pressed, otherwise scan code read
+Original Stack Pointer save	08E8h	MONitor saves the original stack pointer here when first initialised
+
+MON2 improves on MON1 by moving data into the first 100h bytes of RAM, meaning the memory map is contiguous and doesn't need the above 'hole'. This also means a bug that overwrites RAM is less likely to crash the MONitor.
+Similarly, as the stack grows downlwards it will reach ROM space first, meaning a stack bug-induced crash is less likely to overwrite user code.
+
+
+JMON RAM locations
 
 User RAM start	0900h
-Stack Pointer	0
-
-
-JMON
-
-User RAM start	0900h
-Stack Pointer	0
-
-
+Stack Pointer	?
