@@ -1,14 +1,22 @@
 A primer on Keyboard Handling on the TEC
 
+Main Keypad:
+
 In hardware, the 74c923 triggers an NMI inteupt to the CPU on each keypress, and presents the pressed key data on Z80 I/O port 0, 
 bits 0-4 (Valid values 0x00 to 0x13) Keys 0-9 and a-f generate the same hex value, keys -, +, GO and ADDR are values 0x10 to 0x13 respectively.
 
+Shift-Key:
+
+The shift key is independent of the 74c923, and effectively just sets bit 5 of port 0 low if pressed. 
+This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution. Your code
+must consider the state of bit 6 to decide what to do. 
+
+The Shift-Key was not an original part of the design and early TEC's (TEC-1 and 1A PCBs) will not have it fitted.
+See Issue 13 pages 9 and 10 for the Shift mod details.
+
+
 
 What actually happens when a key is pressed varies from one monitor to another.
-
-Also, the shift key is independent of the 74c923, and effectively sets bit 5 of port 0 low if pressed. 
-This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution.
-
 
 MON2:
 
@@ -40,16 +48,18 @@ The NMI code at 0x0066 is simply a RETN instruction - effectively a 'do nothing'
 NMI code must still exist as NMI is still generated in hardware.
 
 JMON simply polls I/O port 3 or 0, and tests bit 6. If bit 6=0, a 74c923 key is pressed. 
+
 JMON polls Port 3 first as part of the DAT board. Without the DAT board, the resistor mod achieves the same result polling port 0.
 The JMON resistor mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the
-resistor between pins 10 and 17 of the Z80, which may be easier, since ping 15 of the 4049 goes to pin 17 of the Z80!
+resistor between pins 10 and 17 of the Z80, which may be easier, since pin 15 of the 4049 goes to pin 17 of the Z80!
 
 If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
 
-Note: If the TEC does not have the Shift key fitted (i.e. you have an Early TEC-1 or 1A PCB), JMON may assume that shift is pressed.
-This is because D5 is left floating and hence may be logic 1 or 0 depending on how the Z80 sees the High-Z bus state.
-The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor - this is a 4K7 resistor between D5
-and +5v (You dont need the actual key or diode to fix this problem). See Issue 13 pages 9 and 10 for the Shift mod details.
+Note: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating
+(wwithout shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state.
+The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor (A 4K7 resistor between D5 and +5v.)
+
+Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
 
 I am not certain if JMON then stores the keyvalue or provides any direct keyboard routines 
 -- please refer to Jims notes && Issue 15 page 24 for further insight.
