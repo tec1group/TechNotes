@@ -43,8 +43,13 @@ JMON polls Port 3 first as part of the DAT board. Without the DAT board, the res
 
 If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
 
+Note: If the TEC does not have the Shift key fitted (i.e. you have an Early TEC-1 or 1A PCB), JMON may assume that shift is pressed.
+This is because D5 is left floating and hence may be logic 1 or 0 depending on how the Z80 sees the High-Z bus state.
+The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor - this is a 4K7 resistor between D5
+and +5v (You dont need the actual key or diode to fix this problem). See Issue 13 pages 9 and 10 for the Shift mod details.
+
 I am not certain if JMON then stores the keyvalue or provides any direct keyboard routines 
--- please refer to jims notes && issue 15 page 24 for further insight.
+-- please refer to Jims notes && Issue 15 page 24 for further insight.
 
 
 SC-1:
