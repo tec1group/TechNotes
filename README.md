@@ -7,7 +7,7 @@ as well as discuss differences btween various MONitors and hardware changes over
 
 Some of the less well understood areas such as keyboard handling will be looked at in detail.
 
-Consider this a fine 'second source' for missing details...nothing her eis too technical, and is designed to assit hardware developers and programmers alike.
+Consider this a fine 'second source' for missing details...nothing here is too technical, and is designed to assist hardware developers and programmers alike.
 
 I will also include notes relating to the Southern Cross SC-1 where known and relevant. Whilst the SC-1 and tEC are not directly interchangeable, they are 95% alike and
 software can be easily adapted for either platform.
