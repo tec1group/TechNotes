@@ -6,7 +6,7 @@ bits 0-4 (Valid values 0x00 to 0x13) Keys 0-9 and a-f generate the same hex valu
 
 What actually happens when a key is pressed varies from one monitor to another.
 
-Also, the shift key is independent of the 74c923, and simply sets bit 5 of port 0 low if pressed. 
+Also, the shift key is independent of the 74c923, and effectively sets bit 5 of port 0 low if pressed. 
 This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution.
 
 
@@ -37,9 +37,12 @@ JMON:
 
 JMON ignores the NMI, in favour of a polled approach. 
 The NMI code at 0x0066 is simply a RETN instruction - effectively a 'do nothing' operation. 
-NMI code must still exist as MI is still generated in hardware.
+NMI code must still exist as NMI is still generated in hardware.
+
 JMON simply polls I/O port 3 or 0, and tests bit 6. If bit 6=0, a 74c923 key is pressed. 
-JMON polls Port 3 first as part of the DAT board. Without the DAT board, the resitor mod achieves the same result polling port 0.
+JMON polls Port 3 first as part of the DAT board. Without the DAT board, the resistor mod achieves the same result polling port 0.
+The JMON resistor mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the
+resistor between pins 10 and 17 of the Z80, which may be easier, since ping 15 of the 4049 goes to pin 17 of the Z80!
 
 If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
 
