@@ -47,19 +47,20 @@ JMON ignores the NMI, in favour of a polled approach.
 The NMI code at 0x0066 is simply a RETN instruction - effectively a 'do nothing' operation. 
 NMI code must still exist as NMI is still generated in hardware.
 
-JMON simply polls I/O port 3 or 0, and tests bit 6. If bit 6=0, a 74c923 key is pressed. 
+JMON first determines if the LCD/DAT Board is present, or not. If the LCD is present, JMON polls port 3 for keyboard status;
+if not, it polls port 0. When the port is read, bit 6 is tested. If bit 6=0, a 74c923 key is pressed. If bit 5=0, the Shift key
+is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
 
-JMON polls Port 3 first as part of the DAT board. Without the DAT board, the resistor mod achieves the same result polling port 0.
-The JMON resistor mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the
-resistor between pins 10 and 17 of the Z80, which may be easier, since pin 15 of the 4049 goes to pin 17 of the Z80!
-
-If bit 5=0, the Shift key is pressed. The code then reads they keyvalue and directly does whatever it wants with it.
+JMON needs a MOD to the TEC known as the 'resistor mod' to support polled keyboard status ONLY IF the DAT/LCD is not fitted.
+The mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the resistor between
+pins 10 and 17 of the Z80, which may be easier, since pin 15 of the 4049 goes to pin 17 of the Z80!
 
 Note: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating
 (wwithout shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state.
 The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor (A 4K7 resistor between D5 and +5v.)
 
 Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
+
 
 I am not certain if JMON then stores the keyvalue or provides any direct keyboard routines 
 -- please refer to Jims notes && Issue 15 page 24 for further insight.
