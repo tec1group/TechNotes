@@ -9,8 +9,8 @@ Some of the less well understood areas such as keyboard handling will be looked 
 
 Consider this a fine 'second source' for missing details...nothing here is too technical, and is designed to assist hardware developers and programmers alike.
 
-I will also include notes relating to the Southern Cross SC-1 where known and relevant. Whilst the SC-1 and tEC are not directly interchangeable, they are 95% alike and
-software can be easily adapted for either platform.
+I will also include notes relating to the Southern Cross SC-1 where known and relevant. Whilst the SC-1 and TEC are not directly interchangeable, they are 95% alike and
+software can be easily adapted for either platform with a few minor edits (in most cases).
 
 Feel free to ask questions.
 
