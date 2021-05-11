@@ -1,9 +1,9 @@
 # TechNotes
-Technical Notes on the hardware design &amp; function of various aspects of the TEC-1.
+Technical Notes on the hardware design &amp; function of various aspects of the TEC-1 and Southern Cross SC-1.
 
 This section is designed to capture information about various aspects of the TEC-1's design that may not be immediately apparent from issues 10-15 alone.
 My aim is to both record details such as I/O port & memory maps, port bit assignments, look at design decision decisions and the limitations thereof,
-as well as discuss differences btween various MONitors and hardware changes over the years.
+as well as discuss differences between various MONitors and hardware changes over the years.
 
 Some of the less well understood areas such as keyboard handling will be looked at in detail.
 
