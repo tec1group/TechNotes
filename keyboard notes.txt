@@ -1,4 +1,4 @@
-A primer on Keyboard Handling on the TEC
+A primer on Keyboard Handling on the TEC-1 & SC-1
 
 Main Keypad:
 
