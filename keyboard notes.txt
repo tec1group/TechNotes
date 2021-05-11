@@ -81,3 +81,21 @@ Port 86H:
 
 The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, 
 except it tests bit 5=1 to see if a key is being pressed (whereas JMON looks for bit 6=0).
+
+
+The 74c923 chip vs. CPU Clock speed and keyboard false triggers):
+
+The 74c923 uses two capacitors to control the keyboard debounce and scanning speeds. These are on pin 6 (scan speed - 100nf) and pin 7 (debounce - 1uf).
+As the TEC clock speeds increase, so these values may need adjustment to avoid missed or 'doubled' keypresses. Also, as the keyswitches wear,
+an increased debounce value may help reduce false presses due to the worn switch contacts bouncing more. Note the higher the debounce cap value, the slower
+the maximum keypress 'repeat' speed, so you may need to type slower!
+
+The 74c923 datasheet shows a 1uf debounce cap provides 0.01 seconds of debounce. This may need to be increased to, say, 3.3uf for more relaible operation
+at and about 4MHz. The datasheet says that 10uf provides 0.1 seconds and 100uf provides 1.0 seconds of debounce. some trial and error is needed with the
+specific cap value that works best for your hardware (switches, clock fequency) & MON type.
+
+Conversely, the 100nf cap results in the 74c923 scanning the keyboard matrix at about 1khz. A 1uf reduces the scan rate to about 100Hz, and a 0.01uf
+increases to about 10khz (the actual value is a bit less than the round number, but the actual rate isn't all that critical). A higher value may be
+helpful if you're using an external keyboard or third party keypad (especially if it's connected via long/unshielded cable) to reduce false inputs
+triggered by noise.
+
