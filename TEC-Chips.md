@@ -34,4 +34,3 @@ The 2716/2732 EPROM can be direclty replaced by the 28Cxx EEPROM equivilant, and
 Z80/Z80A
 
 Any of the Z80 family including the NEC D780C chip will work. Remember the really early Zilog chips may not support 4MHz (Needs Z80A).
-
