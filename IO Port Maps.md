@@ -6,38 +6,38 @@ If we define 'standard' monitors, as MON1 family & MON 2, then ports 0-2 are def
 
 NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can usually be changed easily to support any port avaiallbe in hardware as the MONitors don't touch these ports in any way.
 
-Port 0 - Keyboard data input:
-	bits 0-4 -- keypressed value from the 74c923
-	bit 5 - low = Shift pressed (Mon2 +)
-	bit 6 - low = Key pressed - used by JMON with 4K7 resistor mod only
-	bit 7 - not connected
+Port 0 - Keyboard data input:<br>
+	bits 0-4 -- keypressed value from the 74c923<br>
+	bit 5 - low = Shift pressed (Mon2 +)<br>
+	bit 6 - low = Key pressed - used by JMON with 4K7 resistor mod only<br>
+	bit 7 - not connected<br>
 
 Port 1 - 7-seg Display select & speaker (& JMON tape out) output
 	bits 5-0 select seach 7-segment display, bit 5 = left, bit 0 = right
 	bit  6 - not connected
 	bit  7 - speaker output & tape output (tape --- JMON with DAT board only)
 
-Port 2 - 7-seg segment select output
-	bit 0	segment a
-	bit 1	segment f
-	bit 2	segment g
-	bit 3	segment b
-	bit 4	decimal point
-	bit 5	segment c
-	bit 6	segment e
-	bit 7	segment d
+Port 2 - 7-seg segment select output<br>
+	bit 0	segment a<br>
+	bit 1	segment f<br>
+	bit 2	segment g<br>
+	bit 3	segment b<br>
+	bit 4	decimal point<br>
+	bit 5	segment c<br>
+	bit 6	segment e<br>
+	bit 7	segment d<br>
 
 Segments are defined as per the FND-500 7-segment display specification.
 	
-Port 3 - DAT board serial/inputs/keypresss sense/tape input
-	bit 0	serial input
-	bit 1	IN port 1
-	bit 2	IN port 2
-	bit 3	IN port 3
-	bit 4	IN port 4
-	bit 5	IN port 5
-	bit 6	Keypress sense - LOW = a 74c923 key is being pressed
-	bit 7	Casette input
+Port 3 - DAT board serial/inputs/keypresss sense/tape input<br>
+	bit 0	serial input<br>
+	bit 1	IN port 1<br>
+	bit 2	IN port 2<br>
+	bit 3	IN port 3<br>
+	bit 4	IN port 4<br>
+	bit 5	IN port 5<br>
+	bit 6	Keypress sense - LOW = a 74c923 key is being pressed<br>
+	bit 7	Casette input<br>
 
 Port 4 - DAT board LCD control port output
 
@@ -62,12 +62,12 @@ To decode ports 8-15, add another 74ls138, wired exactly as per the existing, ex
 For >16 ports, A4 could also be used if needed to decode up to 32 ports. Connect A4 to pin 6 via an inverter to the first two 74ls138's, add two more 74ls138's and connect A4 directly (not inverted) to the second two '138's on pin 6 also. (Disconnect pin 6 from +5v on all 4 chips).
 
 
-For Southern Cross SC-1:
-Ports 80h to 83h - uncommitted - available on the I/O port expansion connector
-Port 84h - 7-seg segment select output
-Port 85h - 7-seg Display select & speaker (& JMON tape out) output
-Port 86h - Keyboard data input
-Port 87h - ???
+For Southern Cross SC-1:<br>
+Ports 80h to 83h - uncommitted - available on the I/O port expansion connector<br>
+Port 84h - 7-seg segment select output<br>
+Port 85h - 7-seg Display select & speaker (& JMON tape out) output<br>
+Port 86h - Keyboard data input<br>
+Port 87h - ???<br>
 
 Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
 
