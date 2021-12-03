@@ -1,6 +1,6 @@
-<h1>TEC-1 I/O ports Definitions</h1>
+<h1>TEC-1 I/O Ports Definitions</h1>
 
-For the standard TEC-1x family (1/1A/B/C/D etc) per TE issues 10-15:
+## For the standard TEC-1x family (1/1A/B/C/D etc) per TE issues 10-15:
 
 If we define 'standard' monitors, as MON1 family & MON 2, then ports 0-2 are defined. With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined, as follows.
 
@@ -56,7 +56,7 @@ In JMON, the LCD picks up A7 as the 'register select' line, hence the port 04h/8
 
 
 
-TEC-1 I/O Address Space & Expansion
+## TEC-1 I/O Address Space & Expansion
 
 In a standard TEC only 8 I/O ports are decoded, so the I/O space 'wraps' every 8 ports. Adding A3 to pin 5 of the 74ls138 (disconnect pin 5 from GND and connect to A3 instead) expands this to 16 ports.
 
@@ -65,7 +65,8 @@ To decode ports 8-15, add another 74ls138, wired exactly as per the existing, ex
 For >16 ports, A4 could also be used if needed to decode up to 32 ports. Connect A4 to pin 6 via an inverter to the first two 74ls138's, add two more 74ls138's and connect A4 directly (not inverted) to the second two '138's on pin 6 also. (Disconnect pin 6 from +5v on all 4 chips).
 
 
-For Southern Cross SC-1:<br>
+
+## For Southern Cross SC-1:<br>
 Ports 80h to 83h - uncommitted - available on the I/O port expansion connector<br>
 Port 84h - 7-seg segment select output<br>
 Port 85h - 7-seg Display select & speaker (& JMON tape out) output<br>
