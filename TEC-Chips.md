@@ -38,6 +38,6 @@ The 28C64 is still readily available in 20201, and will drop in with a minor mod
 
 ### Z80/Z80A vs Z80B etc.
 
-Any of the Z80 family including the NEC D780C chip will work. Remember the really early Zilog chips may not support 4MHz (Needs Z80A). The Z80B is also fie - it kjust has a higher *maximum* clock speed, but even a 20MHz part will still only run at 4MHz in an original TEC, becuase the crystal oscilator (or 4049 clock) sets the actual clock speed. What's printed on the CPU chip is only it's maximum rating.
+Any of the Z80 family including the NEC D780C chip will work. Remember the really early Zilog chips may not support 4MHz (Needs Z80A). The Z80B is also fine - it just has a higher *maximum* clock speed, but even a 20MHz part will still only run at 4MHz in an original TEC, becuase the crystal oscilator (or 4049 clock) sets the actual clock speed. What's printed on the CPU chip is only it's maximum rating.
 
 The original Z80 (the non-A version) also is NMOS and does not support the CPU clock being stopped. All CMOS chips support stopping the clock entirely.
