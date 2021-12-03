@@ -45,8 +45,8 @@ See issue 10 for documnetation on the following ROM routines.
 
 ```
 018Eh - Beep Routine. Makes a beep sound.
-01B0h - Music Routine. Plays a musical note sequence based on note data stored at 0800h.
-0270h - Display routine. Scrolls a series of letters across the 7-seg displays from right to left based on character data stoed at 0800h.
+01B0h - Music Routine. Plays a musical note sequence based on note data at 0800h.
+0270h - Display routine. Scrolls a series of letters across the 7-seg displays R to L based on character data at 0800h.
 0320h - Invaders game
 03E0h - NIM game
 0490h - Luna Lander game
@@ -62,7 +62,7 @@ See issue 10 for documnetation on the following ROM routines.
 
 ```
 0800h - User RAM start
-0DF0h - Stack Pointer Close to top of First 2k of RAM. Stack grows downwards until it overwrites user code.
+0DF0h - Stack Pointer (Close to top of First 2k of RAM.)
 ```
 
 MON1 stores it's variables & stack at the top of the first 2k of RAM - 0Fxxh - meaning if a program uses all 2k, you need to 'leave a hole' here. A bug with stack routines (e.g. one PUSH too many) will see the stack eventually overwrite user code, hence corrupting the program in RAM and almost certainly crashing the machine and/or performing unexpected operations.
