@@ -93,16 +93,3 @@ Similarly, as the stack grows downwards it will reach ROM space first, meaning a
 0900h - User RAM start
 ????h - Stack Pointer
 ```
-
-## ROM and RAM chip substitutions
-
-Almost any size Chip from the 62xx and 27xx/28xx family can be substituted in on the TEC. The 28xx EEPROMs work fine, but of course need to be programmed externally, the TEC can't program iself even with an EEPROM fitted, as it doen't support the correct write timing and Programming VCC voltages.
-
-The Atmel 28C64 for example can easily stand in for the 2716 or 2732. There is some wiring to do - simply ground A12, jumper VCC to the TEC's pin 24, tie WE high (bascially connect pins 28,27 and 26 all together, ground pin 2) and leave pin 1 not connected. The drop the chip into the TEC with the extra 4 pins hanging down towards the speaker (i.e. pin 14 of the new chip - GND - goes into pin 12 of the TEC's 2716 socket). Program the bottom 4k with MON1B & MON2 or the bottom 2k with JMON. The rest of the chip's contents doesn't matter, but traditionally would be filled with FFs.
-
-It is very cool to note that the designers effectively allowed 'backwards compatability' with the chip pin-outs so you can easily drop a bigger chip into an existing design with a minumum of re-wiring.
-
-The 6264 (8k) RAM chip can also easily sub in for the 6116, again just ground the two higher order address pins (A11 and A12) so as to "emulate" a 2k chip. You can't use all 8k as-is due to the TEC address decoder only decoding 2k blocks, but this can be redesigned to support all 8k with aditional address deconing hardware...the TEC doesn't make this easy however as mapping 8k into a block starting at 2k in the Z80 addres space isn't easily decodable using a single chip. I'm sure the is a combination of gates that could do it but I have not attempted it personally.
-
-An easier approach may be to map the 6264 from address space 0, and get 6k out of it, by disabling the 'first' 2k; this is easily done with an additional 74LS138; but the ROM CE must be used also to ensure the RAM is not active to the BUS during and ROM address space accesses...this could be done by connecting ROM CE to G1 of the additional 74LS138, and A13/A14/A15 to the A,B.C inputs of this '138; wire MRQ to G2A as per existing '138).
-
