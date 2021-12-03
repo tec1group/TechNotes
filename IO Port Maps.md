@@ -1,10 +1,11 @@
 <h1>TEC-1 I/O Ports Definitions</h1>
 
-## For the standard TEC-1x family (1/1A/B/C/D etc) per TE issues 10-15:
+## For the standard TEC-1x family hardware (TEC-1/1A/B/C/D) as per TE issues 10-15:
 
-If we define 'standard' monitors, as MON1 family & MON 2, then ports 0-2 are defined. With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined, as follows.
+If we define 'standard' monitors, as the MON 1 family & MON 2, then ports 0-2 are defined.
+With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined.
 
-NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can usually be changed easily to support any port avaiallbe in hardware as the MONitors don't touch these ports in any way.
+NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port avaiallbe in hardware as the MONitors don't touch these ports in any way.
 
 #### Port 0 - Keyboard data input:
  - bits 0-4 -- keypressed value from the 74c923<br>
@@ -28,8 +29,9 @@ NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can usually 
  - bit 7	segment d<br>
 
 Segments are defined as per the FND-500 7-segment display specification.
-	
-#### Port 3 - DAT board serial/inputs/keypresss sense/tape input (JMON Only)
+
+#### Port 3 - MON1/1A/2 - uncommitted
+#### Port 3 - JMON - DAT board serial/inputs/keypresss sense/tape input (JMON only)
  - bit 0	serial input<br>
  - bit 1	IN port 1<br>
  - bit 2	IN port 2<br>
@@ -39,7 +41,8 @@ Segments are defined as per the FND-500 7-segment display specification.
  - bit 6	Keypress sense - LOW = a 74c923 key is being pressed<br>
  - bit 7	Casette input<br>
 
-#### Port 4 - DAT board LCD control port output (JMON Only)
+#### Port 4 - MON1/1A/2 - uncommitted
+#### Port 4 - JMON - DAT board LCD control port output (JMON only)
 
 	As per the HD44780 16x2 LCD Spec - Instruction Register
 
@@ -48,7 +51,7 @@ Segments are defined as per the FND-500 7-segment display specification.
 #### Ports 5/6/7 - uncommitted
 (With the DAT / LCD boards taking up ports 3 & 4, any software written for the 8x8 should aim for using Ports 5 & 6)
 
-#### Port 84h - JMON/DAT board LCD data port input/output (JMON only)
+#### Port 84h - JMON DAT board LCD data port input/output (JMON only)
 
 	As per the HD44780 16x2 LCD Spec - Data Register
 
