@@ -37,7 +37,7 @@ This also means the MONitor assumes the Z80 data bass 'floats' at logic level 1 
 
 The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discards bits 5, 6 and 7) and stores it to the A and I registers. Both registers original contents are destroyed.
 
-I have not fully examined the MON1 code, but it appears that the I register is intended to hold the keypress, at least initially, and the overwriting of the A register is an unintentional bug. I'm not sure if ultimately the keypress is stored somewhere in memory, or not.
+It appears that the I register is intended to hold the keypress, and the overwriting of the A register is an unintentional bug (John Hardy, MON-1 author, confirms this).
 
 MON1 Does not support the shift-key and pressing it does nothing due to the AND 0x1F instruction.
 
@@ -72,7 +72,7 @@ Port 86H:
 The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, except it tests bit 5=1 to see if a key is being pressed (whereas JMON looks for bit 6=0).
 
 
-## The 74c923 chip vs. CPU Clock speed and keyboard false triggers)
+## The 74c923 chip vs. CPU Clock speed (and keyboard false triggers)
 
 The 74c923 uses two capacitors to control the keyboard debounce and scanning speeds. These are on pin 6 (scan speed - 100nf) and pin 7 (debounce - 1uf).
 
@@ -81,3 +81,77 @@ As the TEC clock speeds increase, so these values may need adjustment to avoid m
 The 74c923 datasheet shows a 1uf debounce cap provides 0.01 seconds of debounce. This may need to be increased to, say, 3.3uf for more relaible operation at about 4MHz. The datasheet says that 10uf provides 0.1 seconds and 100uf provides 1.0 seconds of debounce. Some trial and error is needed with the specific cap value that works best for your hardware (switches, clock fequency) & MON type.
 
 Conversely, the 100nf cap results in the 74c923 scanning the keyboard matrix at about 1khz. A 1uf reduces the scan rate to about 100Hz, and a 0.01uf increases to about 10khz (the actual value is a bit less than the round number, but the precise scan rate isn't all that critical). A higher value may be helpful if you're using an external keyboard or third party keypad (especially if it's connected via long/unshielded cable) to reduce false inputs triggered by noise.
+
+
+## Keyboard Code - reading keystrokes in software
+
+### MON-1
+
+MON-1 uses an interrupt driven design where the I and A CPU registers are altered by the NMI code at 0066h each time a key is pressed. I was intended to be the keyboard buffer register, and the changing of A was an unintentional bug that some TE magazine examples (e.g. Quick Draw) rely upon.
+
+The original design for keyboard input as described in Issue 11, was based around executing a HALT instruction at the point where a keypress was to be obtained. The instruction after HALT is executed with the A and I registers containing they key code after the key is pressed. Hence, either register can be immediately examined to determine what key was pressed. Hence:
+
+.....
+HALT
+CP 01
+JZ PRESSED_1
+CP 02
+JZ PRESSED_2
+....
+
+This technique is used in programs such as 'Quick Draw' (Issue 11) and the 8x8 training programs (Issue 11).
+
+HALT can also be used to introduce a deliberate pause or "Press any key to continue" function, again many TE sample programs use this to good effect.
+
+The major downside of this design, is tha the whole computer is in the HALT state until a key is pressed - no further instructions can execute until a key is pressed. not exaclty useful if you want to scan the displays or anything else while waiting for a keypress.
+
+MON-1 itself uses a simple trick to see if a key is pressed without using HALT, so it can scan the displays while waiting for a keypress - see the following MON-1 code:
+
+loop:           ld      a, 0ffh
+                ld      i, a            ; set I and A to ffh
+                call    (scan displays)
+                ld      a, i
+                cp      0ffh            ;  if A has now changed (via I), a key has been pressed
+		ret nz			;  return with key value in A
+		jp loop
+
+All that takes place here, is using the I register as a keyboard buffer. First, set I to an invalid value - 0FFh. Later, test the value of I. If I is still equal to 0FFh, then no key has been pressed. If however I has changed, it must be a keypress has occurreed, and the new value in I holds the value of the key pressed. This means also that the code inside (scan displays) cannot alter the I register - it is reserved exclusively as a keyboard buffer. The I register is defined in ROM by the keyboard interrupt handler code at 0066h and cannot be altered.
+
+
+### MON-2
+
+MON-2 takes a similar interupt driven approach, with one main difference. The NMI code at 0066h stores the keyboard value read in memory at 08E0h, and no registers are altered. In other words, the use of the I register as a keyboard buffer has been replaced with memory location 08E0h. This means many MON-1 based routines in the early TE mags won't run properly under MON-2 since I and A no longer hold the key pressed value.
+
+The HALT based approach will still pause until a key is pressed, but a ld a,08E0h instruction (and possibly ld i,a) will need to be inserted immediately after to fetch the key value.
+
+In MON-2, to do other things like scan the displays while checking for a keypress, the following code is used:
+
+
+loop:		call KEYB
+		call (scan displays)
+		jp loop
+		
+
+KEYB:		push af
+                push hl
+               	ld hl,08e0h		; 08e0h is the keyboard buffer address
+                ld a,0ffh
+                cp (hl)                 ; if the buffer still holds $FF, 
+                jr z,POP_HLAF           ; no key pressed and return
+                ld a,(hl)               ;  a = (KEYDATA)
+                and 1fh                 ;  Mask off the high 3 bits
+                bit 5,(hl)              ;  test if the Shift bit 5 is on
+                jr nz,NOSHIFT           ;  if (shift) is on, then
+                add a,14h               ;    add $14 to the contents of A
+
+NOSHIFT:	(take action based on the read key value, which is in A)
+		.....
+                ld (hl),ffh             ; Reset the Keyboard buffer back to $FF
+
+POP_HLAF	pop hl
+		pop af
+		ret
+		
+This code is a bit more elaborate as it processes the SHIFT key, however the principal is broadly similar: if the byte in meory at 08e0h is equal to ffh, no key is pressed. If it's different, process it to determine the pressed key + SHIFT, take action, and finally "clear" the keypress by writing ffh to 08e0h.
+
+
