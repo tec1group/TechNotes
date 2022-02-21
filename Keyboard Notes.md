@@ -9,12 +9,9 @@ bits 0-4 (Valid values 0x00 to 0x13) Keys 0-9 and a-f generate the same hex valu
 
 ### Shift-Key
 
-The shift key is independent of the 74c923, and effectively just sets bit 5 of port 0 low if pressed. 
-This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution. Your code
-must consider the state of bit 6 to decide what to do. 
+The shift key is independent of the 74c923, and effectively just sets bit 5 of port 0 low if pressed. This means pressing the shift key alone typically does nothing - it does not generate an NMI or affect code execution. Your code must consider the state of bit 5 to decide what to do. 
 
-The Shift-Key was not an original part of the design and early TEC's (TEC-1 and 1A PCBs) will not have it fitted.
-See Issue 13 pages 9 and 10 for the Shift mod details.
+The Shift-Key was not an original part of the design and early TEC's (TEC-1 and 1A PCBs) will not have it fitted. See Issue 13 pages 9 and 10 for the Shift mod details.
 
 ## MONitor Differences
 
@@ -22,18 +19,13 @@ What actually happens when a key is pressed varies from one monitor to another.
 
 ### MON2
 
-The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). 
-A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF 
-after reading the actual key value, in order ro "reset" the keyboard buffer to the not-pressed state.
+The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual key value, in order ro "reset" the keyboard buffer to the not-pressed state.
 
-The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. 
-Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, 
-meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used 
-(i.e. AND with 0x1F), test bit 6 for Shift, etc.
+The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used (i.e. AND with 0x1F), test bit 6 for Shift, etc.
 
 This also means the MONitor assumes the Z80 data bass 'floats' at logic level 1 when any undefined bit is read. (port 0 bits 6 and 7 are not connected).
 
-### MON-1B
+### MON-1
 
 The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discards bits 5, 6 and 7) and stores it to the A and I registers. Both registers original contents are destroyed.
 
@@ -89,7 +81,7 @@ Conversely, the 100nf cap results in the 74c923 scanning the keyboard matrix at 
 
 MON-1 uses an interrupt driven design where the I and A CPU registers are altered by the NMI code at 0066h each time a key is pressed. I was intended to be the keyboard buffer register, and the changing of A was an unintentional bug that some TE magazine examples (e.g. Quick Draw) rely upon.
 
-The original design for keyboard input as described in Issue 11, was based around executing a HALT instruction at the point where a keypress was to be obtained. The instruction after HALT is executed with the A and I registers containing they key code after the key is pressed. Hence, either register can be immediately examined to determine what key was pressed. Hence:
+The original design for keyboard input as described in Issue 11, was based around executing a HALT instruction at the point where a keypress was to be obtained. The instruction after HALT is executed with the A and I registers now containing they key code after the key is pressed. Hence, either register can be immediately examined to determine what key was pressed. Hence:
 
 .....
 HALT
@@ -99,7 +91,9 @@ CP 02
 JZ PRESSED_2
 ....
 
-This technique is used in programs such as 'Quick Draw' (Issue 11) and the 8x8 training programs (Issue 11).
+The use of HALT as a keyboard input routine is used in programs such as 'Quick Draw' (Issue 11) and the 8x8 display training programs (Issue 11).
+
+The fact that the A and I registers are altered at random by keypresses can crash or confuse your code - for this reason MON-1 is not a great platform and MON-2 or JMON should be used instead. It is more good luck than good design which sees the MONitor itself not crash randomly due to this flaw.
 
 HALT can also be used to introduce a deliberate pause or "Press any key to continue" function, again many TE sample programs use this to good effect.
 
