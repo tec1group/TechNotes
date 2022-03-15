@@ -21,9 +21,11 @@ To prevent the wrap around issue, address lines A14 and A15 need to be added to 
 
 An alternate approach would be connecting A14 to pin 5 of the 74ls138 will expand the address 'wrap around' range to 8000h. Connecting A15 via an inverter to pin 6 of the 74ls138 will fully decode the full 64k and prevent any wrap-around. (disconnect pins 5 and 6 from ground/power, obviously).
 
-To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also!! This is the approach taken by the SC-1 and is a logical progression to support the newer, larger chips.
+To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also!!
 
-Any more modern TEC 'redesign' would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example. The other problem with not decoding 2k blocks is, since all the MONitors look for 2k of RAM at 0800h, the monitor will need to be modifed so that variables, stack etc. are placed where the RAM actually is - i.e. from 2000h upwards.
+In a modern TEC 'redesign', it would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example, and now also features as a jumper-selectable option on the TEC-1F PCB designed by Craig Jones.
+
+The other problem with not decoding 2k blocks is, since all the MONitors look for 2k of RAM at 0800h, the monitor will need to be modified so that variables, stack etc. are placed where the RAM actually is - i.e. from 2000h upwards.
 
 In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74ls138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM and inverted, for RAM.
 
@@ -71,9 +73,9 @@ See issue 10 for documnetation on the following ROM routines.
 0DF0h - Stack Pointer (Close to top of First 2k of RAM.)
 ```
 
-MON1 stores it's variables & stack at the top of the first 2k of RAM - 0Fxxh - meaning if a program uses all 2k, you need to 'leave a hole' here. A bug with stack routines (e.g. one PUSH too many) will see the stack eventually overwrite user code, hence corrupting the program in RAM and almost certainly crashing the machine and/or performing unexpected operations.
+MON-1 stores it's variables & stack at the top of the first 2k of RAM - 0Fxxh - meaning if a program uses all 2k, you need to 'leave a hole' here. A bug with stack routines (e.g. one PUSH too many) will see the stack eventually overwrite user code, hence corrupting the program in RAM and almost certainly crashing the machine and/or performing unexpected operations.
 
-### MON2 RAM locations
+### MON-2 RAM locations
 
 ```
 0800h - 08FFh - MONitor variables and stack
@@ -82,17 +84,19 @@ MON1 stores it's variables & stack at the top of the first 2k of RAM - 0Fxxh - m
 08c0h - Stack Pointer. The stack grows downwards so is a maximum of C0 bytes in size
 08D8h - Address Current MONitor Address in 4 nibbles over 4 bytes
 08DFh - Mode Flag. Monitor data entry mode (0 = Address Mode, 1 = Data Mode)
-08E0h - Keyboard Buffer: contains ffh if no key pressed, otherwise contains the scan code read from 74c923; scancode +14h if shift pressed
+08E0h - Keyboard Buffer: contains ffh if no key pressed, otherwise contains the scan code read from 74c923; scancode +14h if shift pressed as well
 08E8h - Original Stack Pointer save MONitor saves the original stack pointer here when first initialised
 ```
 
-MON2 improves on MON1 by moving its data into the first 100h bytes of RAM, meaning the memory map is contiguous and doesn't need the above 'hole'. This also means a bug that overwrites yser RAM is less likely to crash the MONitor.
+MON-2 improves on MON-1 by moving its data into the first 100h bytes of RAM, meaning the memory map is contiguous and doesn't need the above 'hole'. This also means a bug that overwrites yser RAM is less likely to crash the MONitor.
 
 Similarly, as the stack grows downwards it will reach ROM space first, meaning a stack bug-induced crash is less likely to overwrite user code.
 
 ### JMON RAM locations
 
 ```
+0800h - 08FFh - MONitor variables and stack
 0900h - User RAM start
-????h - Stack Pointer
+
+0820h - Stack Pointer - Maximum 20h bytes
 ```
