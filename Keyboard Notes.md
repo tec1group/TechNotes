@@ -46,7 +46,7 @@ Note 1: Be aware that without the resistor-mod (and no DAT board) strange keyboa
 
 Note 2: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating (without shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state. The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor (A 4K7 resistor between data bus bit D5 and +5v). Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
 
-JMON appears to require a RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various flags to indicate the overall state - e.g. new keypress, repeat-key, etc.
+JMON appears to require a RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc.
 
 
 ### SC-1
@@ -64,7 +64,7 @@ Port 86H:
 The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, except it tests bit 5=1 (of port 86h) to see if a key is being pressed (whereas JMON looks for bit 6=0).
 
 
-## The 74c923 chip vs. CPU Clock speed (and keyboard false triggers)
+## The 74c923 chip vs. CPU Clock Speed (and keyboard false triggers)
 
 The 74c923 uses two capacitors to control the keyboard debounce and scanning speeds. These are on pin 6 (scan speed - 100nf) and pin 7 (debounce - 1uf).
 
