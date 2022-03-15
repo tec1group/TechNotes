@@ -31,9 +31,9 @@ The problem with not decoding 2k blocks is, since all the MONitors look for 2k o
 
 The TEC MONitors were generally written by hand and are full of hard coded addresses, meaning any such project would be a major undertaking. Check the TEC github - someone may have done it :)
 
-In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74ls138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM and inverted, for RAM.
+In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74ls138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM, and inverted for RAM.
 
-Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first. Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h); e.g. in the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place a RAM chip at 0000h (without advanced hardware mods, at least).
+Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h); e.g. in the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
 
 Over the years there have been many clever designs to allow some form of 'bank switching' to enable the Z80 to see a full 64k of RAM - in the case of the TEC it is unlikely that such a feature would ever be needed (64k ought to be enough, anyone?) and so we will leave such advanced ideas for others to explore.
 
