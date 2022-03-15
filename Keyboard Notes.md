@@ -82,7 +82,7 @@ Conversely, the 100nf cap results in the 74c923 scanning the keyboard matrix at 
 MON-1 uses an interrupt driven design where the I and A CPU registers are altered by the NMI code at 0066h each time a key is pressed. The I register was intended to be the keyboard buffer register, and the changing of A was an unintentional bug that some TE magazine examples (e.g. Quick Draw) happen to rely upon.
 
 The original design for keyboard input as described in Issue 11, was based around executing a HALT instruction at the point where a keypress was to be obtained. The instruction after HALT is executed with the A and I registers now containing they key code after the key is pressed. Hence, either register can be immediately examined to determine what key was pressed. Hence:
-
+```
 .....
 HALT
 CP 01
@@ -90,7 +90,7 @@ JZ PRESSED_1
 CP 02
 JZ PRESSED_2
 ....
-
+```
 The use of HALT as a keyboard input routine is used in programs such as 'Quick Draw' (Issue 11) and the 8x8 display training programs (Issue 11).
 
 The fact that the A and I registers are altered at random by keypresses can crash or confuse your code - for this reason MON-1 is not a great platform and MON-2 or JMON should be used instead. It is more good luck than good design which sees the MONitor itself not crash randomly due to this flaw.
