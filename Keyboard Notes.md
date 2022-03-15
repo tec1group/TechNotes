@@ -16,7 +16,7 @@ The Shift-Key was not an original part of the design and early TEC's (TEC-1 and 
 
 What actually happens when a key is pressed varies quite a lot from one monitor to another.
 
-### MON2
+### MON-2
 
 The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual key value, in order ro "reset" the keyboard buffer to the not-pressed state.
 
