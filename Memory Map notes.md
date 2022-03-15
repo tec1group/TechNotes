@@ -19,6 +19,8 @@ Any uncommitted 2k block can be put to any purpose e.g. RAM Stack, NVRAM, E(E)PR
 
 To prevent the wrap around issue, address lines A14 and A15 need to be added to the 74ls138. The TEC-1B Rev.1 and above use a simple diode based OR gate to work aorund this; the OR gate ensures A14 and A15 must both be LOW (pin 5 of the 74LS138 is used as the control pin). Using a diode based OR gate works fine at TEC speeds and avoids having to fit another chip.
 
+![TEC-1B Memory Decoder Mod](Memory%20Decoder%20Mod.jpg)
+
 An alternate approach would be connecting A14 to pin 5 of the 74ls138 will expand the address 'wrap around' range to 8000h. Connecting A15 via an inverter to pin 6 of the 74ls138 will fully decode the full 64k and prevent any wrap-around. (disconnect pins 5 and 6 from ground/power, obviously).
 
 To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also!!
