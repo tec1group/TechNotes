@@ -51,7 +51,7 @@ The various MONitors offer interesting items at various memory addresses. A brie
 
 ### MON-1 ROM Routines
 
-See issue 10 for documnetation on the following ROM routines.
+See issue 10 for documentation on the following ROM routines.
 
 ```
 018Eh - Beep Routine. Makes a beep sound.
