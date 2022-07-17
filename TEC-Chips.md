@@ -44,18 +44,21 @@ Almost any size static RAM chip from the 62xx and 27xx/28xx family can be substi
 
 ### 2716 EPROM
 
-### EPROM
-
-The 2716/2732 EPROM can be directly replaced by the 28Cxx EEPROM equivilant, and is a 'drop in' replacement with a couple of wiring mods on the extra pins.
+The 2716 or 2732 EPROM can be directly replaced by the 28Cxx EEPROM equivilant, and is a 'drop in' replacement with a couple of wiring mods on the extra pins for the larger capacity parts.
 
 The 28C64 is still readily available in 2021. The TEC-1F PCB can accept a 2864 directly.The 28xx EEPROMs work fine, but of course needs to be programmed externally; the TEC can't program itself even with an EEPROM fitted, as it doen't support the correct write timing and Programming voltages.
 
 The Atmel 28C64 can easily be substituted in as follows - seat the chip into the TEC-1 ROM socket with the extra 4 pins hanging down towards the speaker (i.e. pin 14 of the new chip - GND - goes into pin 12 of the TEC's 2716/32 socket). This leaves 4 extra pins 'overhanging' at the pin-one end. Simply ground A12, jumper VCC to the TEC's pin 24, tie WE high (bascially connect pins 28, 27 and 26 all together, ground pin 2) and leave pin 1 not connected. Program the bottom 4k with MON1B & MON2 or the bottom 2k with JMON. The top 4k of the chip's contents doesn't matter, but traditionally would be filled with FFs.
 
-It is very cool to note that the designers effectively allowed 'backwards compatability' with the chip pin-outs so you can easily drop a bigger chip into an existing design with a minumum of re-wiring. You can see how the evolution of 2716->32->64 (etc) have kept the pinouts as compatible as possible.
+It is very cool to note that the memory designers effectively allowed 'backwards compatability' with the chip pin-outs so you can easily drop a bigger chip into an existing design with a minumum of re-wiring. You can see how the evolution of 2716->32->64 (etc) have kept the pinouts as compatible as possible.
 
 ### 6116 RAM
 
 The 6264 (8k) RAM chip can also easily sub in for the 6116, again just ground the two higher order address pins (A11 and A12) so as to "emulate" a 2k chip. You can't use all 8k as-is due to the TEC address decoder only decoding 2k blocks, but this can be redesigned to support all 8k with aditional address decoding hardware (Or use a TEC-1F PCB which has 8k support)...the TEC doesn't make this easy however as mapping 8k into a block starting at 2k in the Z80 address space isn't easily decodable using a single chip. I'm sure there is a combination of gates that could do it but I have not attempted it personally.
 
 An easier approach may be to map the 6264 from address space 0, and get 6k out of it, by disabling the 'first' 2k; this is easily done with an additional 74LS138; but the ROM CE must be used also to ensure the RAM is not active to the BUS during and ROM address space accesses...this could be done by connecting ROM CE to G1 of the additional 74LS138, and A13/A14/A15 to the A,B,C inputs of this '138; wire MRQ to G2A as per existing '138).
+
+### 74c923 Keyboard Encoder
+
+The 74c923 keyboard encoder is no longer readily available and is proving to be an issue with the long term future for new TEC builds. Buy up when and where you can as there is no 'drop in' equivilant. Limited stock of the 74c923 was still available via Rockby Electronics (Clayton, Vic) as of this writing (July 2022).
+
