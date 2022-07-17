@@ -1,8 +1,8 @@
 # TEC-1 Hardware Memory Map, RAM and ROM notes.
 
-The TEC-1's hardware memory map is created by the 74ls138 that is attached to Z80 address lines A11, A12 and A13. The address decoder decodes 2k blocks of memory because A11 is the lowest decoded address line. 2k blocks were chosen because the 2716 & 6116 chips (both 2k in size) were common at the time of the design and were selected for use.
+The TEC-1's hardware memory map is created by the 74LS138 that is attached to Z80 address lines A11, A12 and A13. The address decoder decodes 2k blocks of memory because A11 is the lowest decoded address line. 2k blocks were chosen because the 2716 & 6116 chips (both 2k in size) were common at the time of the design and were selected for use.
 
-Because A14 and A15 are not decoded, Address 4000h, 8000h, C000h 'wrap around' to 0000h, therefore any program accessing Addresses above 4000h risk overwriting memory by accident.
+Because A14 and A15 are not decoded, Address 4000h, 8000h and C000h 'wrap around' to 0000h, therefore any program accessing Addresses above 4000h risk overwriting memory by accident.
 
 ```
 0000h-07ffh - 2k MONitor ROM
@@ -17,21 +17,21 @@ Because A14 and A15 are not decoded, Address 4000h, 8000h, C000h 'wrap around' t
 
 Any uncommitted 2k block can be put to any purpose e.g. RAM Stack, NVRAM, E(E)PROM, TEC EPROM burner, etc.
 
-To prevent the wrap around issue, address lines A14 and A15 need to be added to the 74ls138. The TEC-1B Rev.1 and above use a simple diode based OR gate to work aorund this; the OR gate ensures A14 and A15 must both be LOW (pin 5 of the 74LS138 is used as the control pin). Using a diode based OR gate works fine at TEC clock speeds (4MHz) and avoids having to fit another chip.
+To prevent the wrap around issue, address lines A14 and A15 need to be added to the 74LS138. The TEC-1B Rev.1 and above use a simple diode based OR gate to work aorund this; the OR gate ensures A14 and A15 must both be LOW (pin 5 of the 74LS138 is used as the control pin). Using a diode based OR gate works fine at TEC clock speeds (4MHz) and avoids having to fit another chip.
 
 ![TEC-1B Memory Decoder Mod](Memory%20Decoder%20Mod.jpg)
 
-An alternate approach would be connecting A14 to pin 5 of the 74ls138 will expand the address 'wrap around' range to 8000h. Connecting A15 via an inverter to pin 6 of the 74ls138 will fully decode the full 64k and prevent any wrap-around. (disconnect pins 5 and 6 from ground/power, obviously).
+An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. (disconnect pins 5 and 6 from ground/power, obviously).
 
 To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also, since the 8 outpouts of the ''138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
 
-In a modern TEC 'redesign', it would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example, and now also featured as a jumper-selectable (but MON-1/2/JMON incompatible) option on the TEC-1F PCB designed by Craig Jones.
+In a modern TEC 'redesign', it would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example, and is now also featured as a jumper-selectable (but MON-1/2/JMON incompatible) option on the TEC-1F PCB designed by Craig Jones.
 
 The problem with not decoding 2k blocks is, since all the MONitors look for 2k of RAM at 0800h, the monitor will need to be modified so that variables, stack etc. are placed where the RAM actually is - i.e. from 2000h upwards in an 8k design. 
 
 The TEC MONitors were generally written by hand and are full of hard coded addresses, meaning any such project would be a major undertaking. Check the TEC github - someone may have done it :)
 
-In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74ls138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM, and inverted for RAM.
+In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74LS138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM, and inverted for RAM.
 
 Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h); e.g. in the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
 
@@ -43,7 +43,7 @@ The first 2K of memory address space is of course ROM. As such, the EPROM is ena
 
 This was never fixed on the original TEC design (the TEC-1E and 1F are fixed) however it does not seem to cause any damage. If anyone ever tried to make a busmaster add-on (IE use the /BUSRQ and /BUSACK pins) this would be a potential problem.
 
-To resolve this design flaw, connect pin 20 of the EPROM socket (/OE) to Z80 pin 21 (/RD) [disconnect pin 20 from GND obviously]. This means the EPROM is only enabled onto the bus during memory READ cycles and the bus is free during writes.
+To resolve this design flaw, connect pin 20 of the EPROM socket (/OE) to Z80 pin 21 (/RD) [disconnect pin 20 from GND obviously]. This means the EPROM is only enabled onto the bus during memory READ cycles and the bus is only driven by the Z80 during writes.
 
 ## Useful MONitor Memory Addreses
 
