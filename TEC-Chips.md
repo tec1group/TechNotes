@@ -6,13 +6,19 @@ In short, the TEC was designed to be built with parts that were cheap and readil
 
 Little (well, absolutely no) thought was given to the world 40 years later in terms of part availability or future design expansion.
 
+### 8212 vs 74LS273
+
+The original TEC used an 8212 latch chip. The 8212 is an Intel part made in the 1970's as part of the 8008,8085,8080 microprocessor families and became end of life only a few years after the TEC was designed. As the chip was designed for Intel CPUs, it was both costly and also physically large as it was considered a custom item.
+
+The 74LS273 is of course a generic 74xxx family chip and not a "special" part. It was both cheaper and physically smaller. It is 100% TEC software compatible and (with the phyical pinout/size differences allowed for) also TEC hardware compatible. TE were very lucky to be able to swap in a generic chip with only a quick PCB change and no software re-writes.
+
 ### Substituting the 74LS273 for other chips
 
-The 74LS273 can be replaced by a 74xx374 or 74xx377 chip quite easily.
+The 74LS273 can be replaced by a 74LS374 or 74LS377 chip quite easily.
 
-On the TEC-1B PCB, pin 1 of these chips is taken to +5v for the '273. For the '374 or '377, it is taken to GND. - there are two jumpers on the PCB for each chip, fit one *or* the other jumper, *never* both. Fitting both jumpers will short out the +5v to ground!!
+On the TEC-1B PCB, pin 1 of these chips is taken to +5v for the '273. For the '374 or '377, it is taken to GND. There are two jumpers on the PCB for each chip, fit one *or* the other jumper, *never* both. Fitting both jumpers will short out the +5v to ground!!
 
-No other changes are required to mix chips. Both the '374 and '377 can substitute for the '273; no software changes are required. On older model TECs and the SC-1 you may need to cut tracks to alter the pin 1 connection (or bend out pin one and run a jumper wire).
+No other changes are required to mix chips. Both the '374 and '377 can substitute for the '273; no software changes are required. On older model TECs and the SC-1 you may need to cut tracks to alter the pin 1 connection (or bend out pin 1 and run a jumper wire).
 
 ### Why the 4049?
 
@@ -61,4 +67,10 @@ An easier approach may be to map the 6264 from address space 0, and get 6k out o
 ### 74c923 Keyboard Encoder
 
 The 74c923 keyboard encoder is no longer readily available and is proving to be an issue with the long term future for new TEC builds. Buy up when and where you can as there is no 'drop in' equivilant. Limited stock of the 74c923 was still available via Rockby Electronics (Clayton, Vic) as of this writing (July 2022).
+
+### 7805 Voltage regulator & power supply
+
+The 7805 is still readily available (it is so common it is unlikely to ever go off the market), however there is no need to use the TECs built in power supply - any source of regulated 5 volts able to deliver 300mA or more will do. A typical NMOS Z80 equipped TEC seems to draw alittle over 200mA when idle sitting at the MONitor prompt, with no peripherals atttached. CMOS Z80's, quite a bit less. An LM340T5 is a direct replacement for a 7805.
+
+Do not use the 78L05 -- this can only deliver ~100mA and will fail in the TEC as it will be overloaded.
 
