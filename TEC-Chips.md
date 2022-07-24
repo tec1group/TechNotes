@@ -30,7 +30,9 @@ You could probably build a working example from a 74xx chip, but getting it stab
 
 Mainly, cost. Back in the 80's, crystals were more expensive and rarer than they are today, also TE didn't stock them. Thats really all there was to it -- it was about saving money and simplifying supply logistics by not stocking an odd, unique part and having to setup purchasing accounts etc. with another supplier. The variable speed option was really a bit of a gimmick; Colin saw it as a 'learning aid' to slow down the machine to be able to see what it was doing at an easier to follow pace (e.g. observe the displays being scanned one by one, or the pitch of a note change) but that was really a justification for using the cheaper parts, rather than a crystal.
 
-Hence, the oscillator module ad-on eventually came out some years later. By then, crystals had gotten cheaper and more readily avilable in 'common' frequencies. 3.5795MHz is a common frequency used in numerous devices, making them cheap and available enough to source in smaller quantities (TE would buy maybe 100 at a time -- most electronic distributors would have minimum order terms of 5,000 units at a time which was excessive --at $2 a crystal, it was not reasonalbe to invest $10,000 in just one component tha twould in all likelyhood sell a couple of hunded units!). Today I just drop in a 14 pin DIL oscillator module as a clock source (the TEC still needs the 4049 inverter) and be done with it!!
+Hence, the oscillator module ad-on eventually came out some years later. By then, crystals had gotten cheaper and more readily avilable in 'common' frequencies. 3.5795MHz is a common frequency used in numerous devices, making them cheap and available enough to source in smaller quantities (TE would buy maybe 100 at a time -- most electronic distributors would have minimum order terms of 5,000 units at a time which was excessive --at $2 a crystal, it was not reasonable for TE to "tie up" $10,000 or so in just one inventory component used in only one kit that would in all likelyhood sell a couple of hunded units!). Today I just drop in a 14 pin DIL oscillator module as a clock source (the TEC still needs the 4049 inverter) and be done with it!!
+
+Note the TE oscillator module also divides the crystal frequency by two - so you need an 8MHz crystal for a 4MHz Z80 clock - or remove the 'divide by two' option by removing the 7473 and connecting pin 5 to pin 9 instead. The divide by two section was included so that the module worked at ~1.79MHz and was thus compatible with the original Z80 (not Z80A) chips.
 
 ### 74xx families
 
@@ -46,13 +48,15 @@ The original Z80 (the non-A version) also is NMOS and does not support the CPU c
 
 ## ROM and RAM chip substitutions
 
-Almost any size static RAM chip from the 62xx and 27xx/28xx family can be substituted in on the TEC. Obviously pin wiring adjustments need to be made but in terms of bus timing and address decode, but fundamentally any static ram following the '2716'/'6116' RAM timing conventions will work.
+Almost any size static RAM chip from the 62xx and 27xx/28xx family can be substituted in on the TEC. Obviously pin wiring adjustments need to be made but in terms of bus timing and address decode, but fundamentally any static RAM following the '2716'/'6116' RAM timing conventions will work.
+
+The TEC when clocked at up to 4MHz works well with chips offering a 150ns or faster access time. Faster chips work fine e.g. 120ns, 100ns, 80ns etc. Generally, the TEC works with almost any chips on the market, excluding perhaps the most vintage of early 1970's parts of 250ns++ access times.
 
 ### 2716 EPROM
 
 The 2716 or 2732 EPROM can be directly replaced by the 28Cxx EEPROM equivilant, and is a 'drop in' replacement with a couple of wiring mods on the extra pins for the larger capacity parts.
 
-The 28C64 is still readily available in 2021. The TEC-1F PCB can accept a 2864 directly.The 28xx EEPROMs work fine, but of course needs to be programmed externally; the TEC can't program itself even with an EEPROM fitted, as it doen't support the correct write timing and Programming voltages.
+The 28C64 is still readily available in 2021. The TEC-1F PCB can accept a 2864 directly. The 28xx EEPROMs work fine, but of course need to be programmed externally; the TEC can't program itself even with an EEPROM fitted, as it doen't support the correct write timing and programming voltages.
 
 The Atmel 28C64 can easily be substituted in as follows - seat the chip into the TEC-1 ROM socket with the extra 4 pins hanging down towards the speaker (i.e. pin 14 of the new chip - GND - goes into pin 12 of the TEC's 2716/32 socket). This leaves 4 extra pins 'overhanging' at the pin-one end. Simply ground A12, jumper VCC to the TEC's pin 24, tie WE high (bascially connect pins 28, 27 and 26 all together, ground pin 2) and leave pin 1 not connected. Program the bottom 4k with MON1B & MON2 or the bottom 2k with JMON. The top 4k of the chip's contents doesn't matter, but traditionally would be filled with FFs.
 
@@ -68,9 +72,10 @@ An easier approach may be to map the 6264 from address space 0, and get 6k out o
 
 The 74c923 keyboard encoder is no longer readily available and is proving to be an issue with the long term future for new TEC builds. Buy up when and where you can as there is no 'drop in' equivilant. Limited stock of the 74c923 was still available via Rockby Electronics (Clayton, Vic) as of this writing (July 2022).
 
+As a work-around, the TEC-1F offers a scanned keyboard option, however this is not software-compatible with any of the original TEC MONitors.
+
 ### 7805 Voltage regulator & power supply
 
-The 7805 is still readily available (it is so common it is unlikely to ever go off the market), however there is no need to use the TECs built in power supply - any source of regulated 5 volts able to deliver 300mA or more will do. A typical NMOS Z80 equipped TEC seems to draw alittle over 200mA when idle sitting at the MONitor prompt, with no peripherals atttached. CMOS Z80's, quite a bit less. An LM340T5 is a direct replacement for a 7805.
+The 7805 is still readily available (it is so common it is unlikely to ever go off the market), however there is no need to use the TECs built in power supply - any source of regulated 5 volts able to deliver around300mA will do. A typical NMOS Z80 equipped TEC seems to draw a little over 200mA when idle sitting at the MONitor prompt, with no peripherals atttached. CMOS Z80's, quite a bit less. An LM340T5 is a direct replacement for a 7805.
 
 Do not use the 78L05 -- this can only deliver ~100mA and will fail in the TEC as it will be overloaded.
-
