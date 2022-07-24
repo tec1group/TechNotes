@@ -42,9 +42,9 @@ The SC-1's 74HCU04 however is critical for the oscillator to be stable - don't s
 
 ### Z80/Z80A vs Z80B etc.
 
-Any of the Z80 family including the NEC D780C chip will work. Remember the really early Zilog chips may not support 4MHz (Needs Z80A). The Z80B is also fine - it just has a higher *maximum* clock speed, but even a 20MHz part will still only run at (up to) 4MHz in an original TEC, because the crystal oscilator (or 4049 clock) sets the actual clock speed. What's printed on the CPU chip is only it's maximum rating.
+Any of the Z80 family including the NEC D780C chip will work in the original TEC design. The really early Zilog chips work up to 2.5MHz, but a Z80A is needed for 4MHz operation. The Z80B and Z80H are also fine - they just have higher *maximum* clock speeds, but even a 20MHz part will still only run at (up to) 4MHz in an original TEC, because the crystal oscilator (or 4049 clock) sets the actual clock speed. What's printed on the CPU chip is only it's maximum rating.
 
-The original Z80 (the non-A version) also is NMOS and does not support the CPU clock being stopped. All CMOS chips support stopping the clock entirely.
+The original Z80 (the non-A version) also is NMOS and uses more power, plus does not support the CPU clock being stopped. All CMOS chips support stopping the clock entirely. The TEC design does not 'stop the clock' so this isn't really a concern, however the increased power consumption of a non-CMOS part will make the 7805 run a little warmer.
 
 ## ROM and RAM chip substitutions
 
