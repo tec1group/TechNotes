@@ -1,8 +1,8 @@
 # TEC-1 Hardware Memory Map, RAM and ROM notes.
 
-The TEC-1's hardware memory map is created by the 74LS138 that is attached to Z80 address lines A11, A12 and A13. The address decoder decodes 2k blocks of memory because A11 is the lowest decoded address line. 2k blocks were chosen because the 2716 & 6116 chips (both 2k in size) were common at the time of the design and were selected for use.
+The TEC-1's original hardware memory map is created by the 74LS138 that is attached to Z80 address lines A11, A12 and A13. The address decoder decodes 2k blocks of memory because A11 is the lowest decoded address line. 2k blocks were chosen because the 2716 & 6116 chips (both 2k in size) were common at the time of the design and were selected for use.
 
-Because A14 and A15 are not decoded, Address 4000h, 8000h and C000h 'wrap around' to 0000h, therefore any program accessing Addresses above 4000h risk overwriting memory by accident.
+Because A14 and A15 are not decoded, Address 4000h, 8000h and C000h 'wrap around' to 0000h, therefore any program accessing Addresses above 4000h risk overwriting memory by accident. This effectively limits the original TEC to 16k of usable address space.
 
 ```
 0000h-07ffh - 2k MONitor ROM
@@ -17,23 +17,25 @@ Because A14 and A15 are not decoded, Address 4000h, 8000h and C000h 'wrap around
 
 Any uncommitted 2k block can be put to any purpose e.g. RAM Stack, NVRAM, E(E)PROM, TEC EPROM burner, etc.
 
-To prevent the wrap around issue, address lines A14 and A15 need to be added to the 74LS138. The TEC-1B Rev.1 and above use a simple diode based OR gate to work aorund this; the OR gate ensures A14 and A15 must both be LOW (pin 5 of the 74LS138 is used as the control pin). Using a diode based OR gate works fine at TEC clock speeds (4MHz) and avoids having to fit another chip.
+## TEC-1B Memory map revision
+
+To prevent the wrap around issue, address lines A14 and A15 need to be added to the 74LS138. The TEC-1B Rev.1 and above (also the 1C, 1D and 1F) use a simple diode based OR gate to achieve this; the OR gate ensures A14 and A15 must both be LOW (pin 5 of the 74LS138 is used as the control pin). Using a diode based OR gate works fine at TEC clock speeds (4MHz) and avoids having to fit another chip.
 
 ![TEC-1B Memory Decoder Mod](Memory%20Decoder%20Mod.jpg)
 
-An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. (disconnect pins 5 and 6 from ground/power, obviously).
+## Alternate approaches to memory mapping -- A discussion
+
+An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal apprach unless you want to add yut another chip.
 
 To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also, since the 8 outpouts of the ''138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
 
 In a modern TEC 'redesign', it would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example, and is now also featured as a jumper-selectable (but MON-1/2/JMON incompatible) option on the TEC-1F PCB designed by Craig Jones.
 
-The problem with not decoding 2k blocks is, since all the MONitors look for 2k of RAM at 0800h, the monitor will need to be modified so that variables, stack etc. are placed where the RAM actually is - i.e. from 2000h upwards in an 8k design. 
-
-The TEC MONitors were generally written by hand and are full of hard coded addresses, meaning any such project would be a major undertaking. Check the TEC github - someone may have done it :)
+The problem with not decoding 2k blocks is, since all the MONitors look for 2k of RAM at 0800h, the monitor will need to be modified so that variables, stack etc. are placed where the RAM actually is - i.e. from 2000h upwards in an 8k design.  The TEC MONitors were generally written by hand and are full of hard coded addresses, meaning any such project would be a major undertaking. Check the TEC github - someone may have done it :)
 
 In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74LS138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM, and inverted for RAM.
 
-Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h); e.g. in the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
+Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h). In the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
 
 Over the years there have been many clever designs to allow some form of 'bank switching' to enable the Z80 to see a full 64k of RAM - in the case of the TEC it is unlikely that such a feature would ever be needed (64k ought to be enough, anyone?) and so we will leave such advanced ideas for others to explore.
 
