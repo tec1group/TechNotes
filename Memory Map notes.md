@@ -25,9 +25,9 @@ To prevent the wrap around issue, address lines A14 and A15 need to be added to 
 
 ## Alternate approaches to memory mapping -- A discussion
 
-An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal apprach unless you want to add yut another chip.
+An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal apprach unless you want to add yet another chip.
 
-To support larger size chips e.g. 8k 6264 RAM & 27c64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3. This automatically eliminates the 'wrap around' problem also, since the 8 outpouts of the ''138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
+To support larger size chips e.g. 8k 6264 RAM & 27C64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3 (of the '138). This automatically eliminates the 'wrap around' problem also, since the 8 outputs of the '138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
 
 In a modern TEC 'redesign', it would be logical to move to 8k (or even higher size block) addressing. This was done in the Southern Cross SC-1, for example, and is now also featured as a jumper-selectable (but MON-1/2/JMON incompatible) option on the TEC-1F PCB designed by Craig Jones.
 
@@ -35,15 +35,15 @@ The problem with not decoding 2k blocks is, since all the MONitors look for 2k o
 
 In an extreme case, a 32k ROM + 32k RAM design can eliminate the 74LS138 entirely, and simply use A15 as the 'chip select' signal - as-is for ROM, and inverted for RAM.
 
-Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - so the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h). In the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
+Generally, any Z80 CPU hardware design needs ROM placed at 0000h since the power-on program counter address is 0000h - the first CPU instruction is always fetched from 0000h. If you have RAM or "nothing" at this address, you can't guarantee what instruction the CPU will execute first (but you can be sure it won't be anything useful!!). Also, the NMI, INT and restart vectors all point to addresses within the first 100h bytes (e.g. NMI at 00066h). In the TECs case, there needs to be the keyboard handler at 0066h (NMI vector). This generally means that you cann't place RAM at 0000h (without advanced hardware mods, at least).
 
-Over the years there have been many clever designs to allow some form of 'bank switching' to enable the Z80 to see a full 64k of RAM - in the case of the TEC it is unlikely that such a feature would ever be needed (64k ought to be enough, anyone?) and so we will leave such advanced ideas for others to explore.
+Over the years there have been many clever designs to allow some form of 'bank switching' to enable the Z80 to see a full 64k of RAM - in the case of the TEC it is unlikely that such a feature would ever be needed (62k ought to be enough, anyone?) and so we will leave such advanced ideas for others to explore.
 
-## Data Bus Conflict on ROM address space write design flaw
+## Data Bus Conflict on ROM address space write: A design flaw
 
 The first 2K of memory address space is of course ROM. As such, the EPROM is enabled onto the CPU data bus any time the bottom 2k of memory is addressed. Normally this address space is only READ from (given it's a ROM!!) however there is nothing stopping the EPROM also responding to memory WRITEs to this address space. This is because on the EPROM, /OE is always enabled and /CS is only driven by /MEMRQ. The state of the /RD and /WR lines is ignored. Hence, the Z80 and the ROM will BOTH try to output data to the bus in a memory write between addreses 0000h and 07ffh - which can happen during a crash (e.g. stack overflow) or just with a simple programming slip.
 
-This was never fixed on the original TEC design (the TEC-1E and 1F are fixed) however it does not seem to cause any damage. If anyone ever tried to make a busmaster add-on (IE use the /BUSRQ and /BUSACK pins) this would be a potential problem.
+This was never fixed on the original TEC design (the TEC-1E and 1F are fixed by connecting /RD to /OE) however it does not seem to cause any damage. If anyone ever tried to make a busmaster add-on (IE use the /BUSRQ and /BUSACK pins) this could be a potential problem.
 
 To resolve this design flaw, connect pin 20 of the EPROM socket (/OE) to Z80 pin 21 (/RD) [disconnect pin 20 from GND obviously]. This means the EPROM is only enabled onto the bus during memory READ cycles and the bus is only driven by the Z80 during writes.
 
