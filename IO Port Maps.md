@@ -1,11 +1,11 @@
 <h1>TEC-1 I/O Ports Definitions</h1>
 
-## For the standard TEC-1x family hardware (TEC-1/1A/B/C/D) as per TE issues 10-15:
+## For the standard TEC-1x family hardware (TEC-1/1A/B/C/D/F) as per TE issues 10-15:
 
 If we define 'standard' monitors, as the MON 1 family & MON 2, then ports 0-2 are defined.
 With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined.
 
-NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port avaiallbe in hardware as the MONitors don't touch these ports in any way.
+NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port avaialable in hardware as the MONitors don't touch these ports in any way.
 
 #### Port 0 - Keyboard data input:
  - bits 0-4 -- keypressed value from the 74c923<br>
@@ -59,9 +59,9 @@ In JMON, the LCD picks up A7 as the 'register select' line, hence the port 04h/8
 
 ## TEC-1 I/O Address Space & Expansion
 
-In a standard TEC only 8 I/O ports are decoded, so the I/O space 'wraps' every 8 ports. Adding A3 to pin 5 of the 74ls138 (disconnect pin 5 from GND and connect to A3 instead) expands this to 16 ports. This mod is done on TEC-1B rev.1 and later PCBs.
+In a standard TEC only 8 I/O ports are decoded, so the I/O space 'wraps' every 8 ports. Adding A3 to pin 5 of the 74LS138 (disconnect pin 5 from GND and connect to A3 instead) expands this to 16 ports. This mod is done on TEC-1B rev.1 and later PCBs.
 
-To decode ports 8-15, add another 74ls138, wired exactly as per the existing, except connect A3 to pin 6 instead of +5v & Keep pin 5 Grounded).
+To decode ports 8-15, add another 74LS138, wired exactly as per the existing, except connect A3 to pin 6 instead of +5v & Keep pin 5 Grounded).
 
 For >16 ports, A4 could also be used to decode up to 32 ports. Connect A4 to pin 6 via an inverter to the first two 74ls138's, add two more 74ls138's and connect A4 directly (not inverted) to the second two '138's on pin 6 also. (Disconnect pin 6 from +5v on all 4 chips). A spare gate on the 4049 could serve as the inverter without adding additional chips.
 
@@ -84,6 +84,6 @@ Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any L
 
 Note that the SC-1 has the keyboard and 7-segment ports in a different order compared to the TEC.
 
-The SC-1 decodes Address lines A6 and A7 for I/O meaning it has the ability to expand to 32 I/O ports - ranges 40h-4Fh and 80h to 8Fh. The onboard 74hc138 decodes 80h to 87h.
+The SC-1 decodes Address lines A6 and A7 for I/O meaning it has the ability to expand to 32 I/O ports - ranges 40h-4Fh and 80h to 8Fh. The onboard 74HC138 decodes 80h to 87h.
 
 Note the SC-1's address model conflicts with the DAT board's use of 84h, meaning you can't fit a TEC/JMON type LCD to the SC-1 and use JMON in it without additional code rewrites. To fix this, use a different address line instead of A7 - e.g. use of A6 on the DAT board would put the LCD at 04h/44h.
