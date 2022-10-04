@@ -25,7 +25,7 @@ To prevent the wrap around issue, address lines A14 and A15 need to be added to 
 
 ## Alternate approaches to memory mapping -- A discussion
 
-An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal apprach unless you want to add yet another chip.
+An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal approach unless you want to add yet another chip.
 
 To support larger size chips e.g. 8k 6264 RAM & 27C64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3 (of the '138). This automatically eliminates the 'wrap around' problem also, since the 8 outputs of the '138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
 
