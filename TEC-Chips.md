@@ -48,7 +48,7 @@ The original Z80 (the non-A version) also is NMOS and uses more power, plus does
 
 ## ROM and RAM chip substitutions
 
-Almost any size static RAM chip from the 62xx and 27xx/28xx family can be substituted in on the TEC. Obviously pin wiring adjustments need to be made but in terms of bus timing and address decode, but fundamentally any static RAM following the '2716'/'6116' RAM timing conventions will work.
+Almost any size static RAM/ROM chips from the 27/28xx and 61/62xx families can be substituted in on the TEC. Obviously pin wiring adjustments need to be made but in terms of bus timing and address decode, but fundamentally any memory devices following the '2716', '6116' RAM timing conventions will work.
 
 The TEC when clocked at up to 4MHz works well with chips offering a 150ns or faster access time. Faster chips work fine e.g. 120ns, 100ns, 80ns etc. Generally, the TEC works with almost any chips on the market, excluding perhaps the most vintage of early 1970's parts of 250ns++ access times.
 
@@ -60,7 +60,11 @@ The 28C64 is still readily available in 2021. The TEC-1F PCB can accept a 2864 d
 
 The Atmel 28C64 can easily be substituted in as follows - seat the chip into the TEC-1 ROM socket with the extra 4 pins hanging down towards the speaker (i.e. pin 14 of the new chip - GND - goes into pin 12 of the TEC's 2716/32 socket). This leaves 4 extra pins 'overhanging' at the pin-one end. Simply ground A12, jumper VCC to the TEC's pin 24, tie WE high (bascially connect pins 28, 27 and 26 all together, ground pin 2) and leave pin 1 not connected. Program the bottom 4k with MON1B & MON2 or the bottom 2k with JMON. The top 4k of the chip's contents doesn't matter, but traditionally would be filled with FFs.
 
-It is very cool to note that the memory designers effectively allowed 'backwards compatability' with the chip pin-outs so you can easily drop a bigger chip into an existing design with a minumum of re-wiring. You can see how the evolution of 2716->32->64 (etc) have kept the pinouts as compatible as possible.
+It is very cool to note that the memory designers effectively allowed for good 'backwards compatability' with the chip pin-outs so you can easily drop a bigger chip into an existing design with a minumum of re-wiring. You can see how the evolution of 2716->32->64 (etc) have kept the pinouts as compatible as possible.
+
+The following table of 27xx family pinouts may be useful:
+
+![27xx family Pinouts](EPROM_Table.jpg)
 
 ### 6116 RAM
 
@@ -76,6 +80,8 @@ As a work-around, the TEC-1F offers a scanned keyboard option, however this is n
 
 ### 7805 Voltage regulator & power supply
 
-The 7805 is still readily available (it is so common it is unlikely to ever go off the market), however there is no need to use the TECs built in power supply - any source of regulated 5 volts able to deliver around300mA will do. A typical NMOS Z80 equipped TEC seems to draw a little over 200mA when idle sitting at the MONitor prompt, with no peripherals atttached. CMOS Z80's, quite a bit less. An LM340T5 is a direct replacement for a 7805.
+The 7805 is still readily available (it is so common it is unlikely to ever go off the market), however there is no need to use the TECs built in power supply - any source of regulated 5 volts able to deliver around 300mA will do. A typical NMOS Z80 equipped TEC seems to draw a little over 200mA when idle sitting at the MONitor prompt, with no peripherals atttached. CMOS Z80's, quite a bit less. An LM340T5 is a direct replacement for a 7805.
 
 Do not use the 78L05 -- this can only deliver ~100mA and will fail in the TEC as it will be overloaded.
+
+There are also modern relacmeents for the 7805 that use modern switcihng technology, run cooler and are far more efficient. These devices are often drop-in replacements (same pinout) and all seem to work fine in the TEC. 
