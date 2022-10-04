@@ -61,7 +61,7 @@ In JMON, the LCD picks up A7 as the 'register select' line, hence the port 04h/8
 
 In a standard TEC only 8 I/O ports are decoded, so the I/O space 'wraps' every 8 ports. Adding A3 to pin 5 of the 74LS138 (disconnect pin 5 from GND and connect to A3 instead) expands this to 16 ports. This mod is done on TEC-1B rev.1 and later PCBs.
 
-![Original TEC IO Decoder](IOMaps/TEC_Original.png =250x) ![TEC-1B Rev.1+ IO Decoder](IOMaps/TEC_1B_Rev1.png=250x)
+![Original TEC IO Decoder](IOMaps/TEC_Original.png) ![TEC-1B Rev.1+ IO Decoder](IOMaps/TEC_1B_Rev1.png)
 
 To decode ports 8-15, add another 74LS138, wired exactly as per the existing, except connect A3 to pin 6 instead of +5v & Keep pin 5 Grounded).
 
