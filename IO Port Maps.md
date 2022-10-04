@@ -67,7 +67,9 @@ To decode ports 8-15, add another 74LS138, wired exactly as per the existing, ex
 
 For >16 ports, A4 could also be used to decode up to 32 ports. Connect A4 to pin 6 via an inverter to the first two 74ls138's, add two more 74ls138's and connect A4 directly (not inverted) to the second two '138's on pin 6 also. (Disconnect pin 6 from +5v on all 4 chips). A spare gate on the 4049 could serve as the inverter without adding additional chips.
 
-A more universal design is presented below; it simply needs 1 more 74ls138 chip. The following design fully decodes the entire IO address space, meaning no port overlaps -- allowing use of SC-1 peripherals at port 80h+ whist keeping full original hardware compatibility. Additional IO port selects can be created by simply adding more 74ls138's and wiring them to the relevant select outout of the additional '138 shown.
+A more universal design is presented below; it simply needs 1 more 74ls138 chip. The following design fully decodes the entire IO address space, meaning no port overlaps -- allowing use of SC-1 peripherals at port 80h+ whist keeping almost full original hardware compatibility. Additional IO port selects can be created by simply adding more 74ls138's and wiring them to the relevant select outout of the additional '138 shown.
+
+This will break LCD support in JMON however, due to the LCD using ports 04h and 84h. To avoid this, don't connect to A7 and instead just ground pin 5 of the Additional 138. This will cause the IO ports to wrap around on the high bit. I.e Port 00h wraps to 80h, 01h/81h etc. 
 
 ![TEC-1B Suggested full address range IO Decoder](IOMaps/TEC_Suggested.png)
 
