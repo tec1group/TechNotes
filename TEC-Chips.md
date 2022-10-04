@@ -84,4 +84,4 @@ The 7805 is still readily available (it is so common it is unlikely to ever go o
 
 Do not use the 78L05 -- this can only deliver ~100mA and will fail in the TEC as it will be overloaded.
 
-There are also modern relacmeents for the 7805 that use modern switcihng technology, run cooler and are far more efficient. These devices are often drop-in replacements (same pinout) and all seem to work fine in the TEC. 
+There are also modern replacmeents for the 7805 that use modern switching technology, run cooler and are far more efficient. These devices are often drop-in replacements (same pinout) and all seem to work fine in the TEC. 
