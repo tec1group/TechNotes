@@ -61,9 +61,15 @@ In JMON, the LCD picks up A7 as the 'register select' line, hence the port 04h/8
 
 In a standard TEC only 8 I/O ports are decoded, so the I/O space 'wraps' every 8 ports. Adding A3 to pin 5 of the 74LS138 (disconnect pin 5 from GND and connect to A3 instead) expands this to 16 ports. This mod is done on TEC-1B rev.1 and later PCBs.
 
+![Original TEC IO Decoder](IOMaps/TEC_Original.png) ![TEC-1B Rev.1+ IO Decoder](IOMaps/TEC_1B_Rev1.png)
+
 To decode ports 8-15, add another 74LS138, wired exactly as per the existing, except connect A3 to pin 6 instead of +5v & Keep pin 5 Grounded).
 
 For >16 ports, A4 could also be used to decode up to 32 ports. Connect A4 to pin 6 via an inverter to the first two 74ls138's, add two more 74ls138's and connect A4 directly (not inverted) to the second two '138's on pin 6 also. (Disconnect pin 6 from +5v on all 4 chips). A spare gate on the 4049 could serve as the inverter without adding additional chips.
+
+A more universal design is presented below; it simply needs 1 more 74ls138 chip. The following design fully decodes the entire IO address space, meaning no port overlaps -- allowing use of SC-1 peripherals at port 80h+ whist keeping full original hardware compatibility. Additional IO port selects can be created by simply adding more 74ls138's and wiring them to the relevant select outout of the additional '138 shown.
+
+![TEC-1B Suggested full address range IO Decoder](IOMaps/TEC_Suggested.png)
 
 ## For Southern Cross SC-1:
 
