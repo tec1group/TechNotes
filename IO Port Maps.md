@@ -5,7 +5,7 @@
 If we define 'standard' monitors, as the MON 1 family & MON 2, then ports 0-2 are defined.
 With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined.
 
-NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port avaialable in hardware as the MONitors don't touch these ports in any way.
+NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port available in hardware as the MONitors don't touch these ports in any way.
 
 #### Port 0 - Keyboard data input:
  - bits 0-4 -- keypressed value from the 74c923<br>
@@ -69,11 +69,13 @@ For >16 ports, A4 could also be used to decode up to 32 ports. Connect A4 to pin
 
 A more universal design is presented below; it simply needs 1 more 74ls138 chip. The following design fully decodes the entire IO address space, meaning no port overlaps -- allowing use of SC-1 peripherals at port 80h+ whist keeping almost full original hardware compatibility. Additional IO port selects can be created by simply adding more 74ls138's and wiring them to the relevant select outout of the additional '138 shown.
 
-This will break LCD support in JMON however, due to the LCD using ports 04h and 84h. To avoid this, don't connect to A7 and instead just ground pin 5 of the Additional 138. This will cause the IO ports to wrap around on the high bit. I.e Port 00h wraps to 80h, 01h/81h etc. 
+This will break LCD support in JMON however, due to the LCD using ports 04h and 84h. To avoid this, don't connect to A7 and instead just ground pin 5 of the additional '138. This will cause the IO ports to wrap around on the high bit. I.e Port 00h wraps to 80h, 01h/81h etc. 
 
 ![TEC-1B Suggested full address range IO Decoder](IOMaps/TEC_Suggested.png)
 
-## For Southern Cross SC-1:
+## For Southern Cross SC-1
+
+The 74HC138 decodes address lines A7 (high), A6 (low) and A0-2 (port select). This means it occupies the IO address range 80h to BFh, wrapping around every 8 ports within this space.
 
 #### Ports 80h to 83h - uncommitted - available on the I/O port expansion connector
 
