@@ -146,6 +146,15 @@ POP_HLAF:	pop hl
 This code is a bit more elaborate as it processes the SHIFT key, however the principal is broadly similar: if the byte in memory at 08e0h is equal to ffh, no key is pressed. If it's different, process it to determine the pressed key + SHIFT, take action, and finally "clear" the keypress by writing ffh to 08e0h.
 
 
+### JMON
+
+Execute a RST 20h instruction
+
+Test the Carry flag. If set, a key is being pressed, and the key's value is in the A register and also placed in memory at 0820h.
+Test the Zero flag.  If set, it means the key is newly detected; if Zero flag is clear the key is 'repeating' (i.e. being held down)
+
+Note: The port (00h) input value read is ANDed with 1Fh, so Shift is not read / processed by RST 20h. Shift state must be checked separately.
+
 ## Keyboard input in your code
 
 So, the question becomes - how to best support keyboard input in your code?
