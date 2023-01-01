@@ -36,17 +36,15 @@ MON-1 Does not support the shift-key and pressing it does nothing due to the AND
 
 JMON ignores the NMI, in favour of a polled approach to determining if a key is pressed or not. The NMI code at 0x0066 is simply a RET instruction - effectively a 'do nothing' operation. The NMI interrupt routine code must still exist as NMI is still generated in hardware.
 
-JMON first determines (at reset) if the LCD/DAT Board is present, or not & sets a flag in memory to remember which port to poll for keyboard data.
+JMON polls port 3 for keyboard status; when port 3 is read, bit 6 is tested. If bit 6=0, a 74c923 key is pressed. If bit 5=0, the Shift key is pressed. The code then reads they keyvalue from port 0 and directly does whatever it wants with it. i.e. only the 'key is pressed' status comes from port 3.
 
-If the LCD is present, polls port 3 for keyboard status; if not, it polls port 0. When the port is read, bit 6 is tested. If bit 6=0, a 74c923 key is pressed. If bit 5=0, the Shift key is pressed. The code then reads they keyvalue from port 0 and directly does whatever it wants with it. i.e. only the 'key is pressed' status comes from port 3, and then only when the DAT board is fitted.
+JMON needs a MOD to the TEC known as the 'resistor mod' to support polled keyboard status ONLY IF the DAT/LCD board is *NOT* fitted. The mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the resistor between pins 10 and 17 of the Z80, which may be easier, since pin 15 of the 4049 goes to pin 17 of the Z80! If the DAT board is fitted, logic on the DAT board replaces the resistor mod. This actually also means that if *ANY* unused IO port is read, bit 6 indicates indicates the keypressed status!!!
 
-JMON needs a MOD to the TEC known as the 'resistor mod' to support polled keyboard status ONLY IF the DAT/LCD board is *NOT* fitted. The mod is to fit a 4k7 resistor between pin 15 of the 4049 and pin 10 of the Z80. You can actually just put the resistor between pins 10 and 17 of the Z80, which may be easier, since pin 15 of the 4049 goes to pin 17 of the Z80! If the DAT board is fitted, logic on the DAT board replaces the resistor mod.
+Note 1: Be aware that without the resistor-mod (and no DAT board) strange keyboard things can happen - e.g. the TEC may see continuous random keypresses, or, may not see actual keyboard input at all (both due to the floating state of the D6 bit). TEC-1B REV.1 PCBs and newer include the JMON resistor as standard as it allows any software to implement a polled keyboard operation mode regardless of monitor used.
 
-Note 1: Be aware that without the resistor-mod (and no DAT board) strange keyboard things can happen - e.g. the TEC may see continuous random keypresses, or, may not see actual keyobard input at all (both due to the floating state of the D6 bit). TEC-1B REV.1 PCBs and newer include the JMON resistor as standard as it allows any software to implement a polled keyboard operation mode regardless of monitor used.
+Note 2: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating (without shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state. The result is continuous or random shifted-input values. To fix this, fit the Shift-key resistor (A 4K7 resistor between data bus bit D5 and +5v). Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
 
-Note 2: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating (without shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state. The result is continuous or random keypress inputs. To fix this, fit the Shift-key resistor (A 4K7 resistor between data bus bit D5 and +5v). Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
-
-JMON appears to require a RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc.
+JMON appears to use the RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc.
 
 
 ### SC-1
