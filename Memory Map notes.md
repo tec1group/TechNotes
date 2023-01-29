@@ -24,6 +24,15 @@ To prevent the wrap around issue, address lines A14 and A15 need to be added to 
 
 ![TEC-1B Memory Decoder Mod](Memory%20Decoder%20Mod.jpg)
 
+If your classic TEC has two 1N4148 dides fitted to the right of the Z80, you have this Mod.
+
+```
+0000h-07ffh - 2k MONitor ROM
+0800h-0fffh - 2k RAM
+1000h-17ffh - 2k Expansion Port
+1800h-ffffh - Uncommitted
+```
+
 ## TEC-1F
 
 The TEC-1F introduces a new memory map option: 8K Addressing. In this model the ROM and RAM are 8k each (using a 2764 or 2864 xPROM and a 6264 RAM). This allows more expansive software development and more features, as well as making the mory map compatible with the Scouthern Cross SC-1.
