@@ -23,9 +23,48 @@ To prevent the wrap around issue, address lines A14 and A15 need to be added to 
 
 ![TEC-1B Memory Decoder Mod](Memory%20Decoder%20Mod.jpg)
 
+## TEC-1F
+
+The TEC-1F introduces a new memory map option: 8K Addressing. In this model the ROM and RAM are 8k each (using a 2764 or 2864 xPROM and a 6264 RAM). This allows more expansive software development and more features, as well as making the mory map compatible with the Scouthern Cross SC-1.
+
+```
+0000h-1fffh - 8k MONitor ROM
+2000h-3fffh - 8k RAM
+4000h-5fffh - 8k Expansion Port
+6000h-7fffh - uncommitted
+8000h-9fffh - uncommitted	
+A000h-Bfffh - uncommitted
+C000h-Dfffh - uncommitted
+E000h-Ffffh - uncommitted
+```
+
+6264 and 2864 chips are also far more readily availalbe (although still quite old) meaning it is easier to gather the parts to build a TEC-1F in modrn times.
+
+Memory map modes are jumper selectable; the computer must be powered down to change modes, in which case the bottom 2k of the fitted RAM and ROM only are usable; however the 'LOW' and 'HIGH' parts of the rOM are still selectable with an optional Switch allowing a classic MON 1B/2 TEC to be built.
+
+The SCMON and BMON both assume 8k addressing and is envisioned as the way forward for future developments. 2k addressing is really only present should one wish to experiment with legacy software such as JMON or MON-2.
+
+## Southern Cross SC-1
+
+The SC-1 was the first to offer the 8k addressing model:
+
+```
+0000h-1fffh - 8k MONitor ROM
+2000h-3fffh - 8k RAM
+4000h-5fffh - uncommitted
+6000h-7fffh - uncommitted
+8000h-9fffh - uncommitted	
+A000h-Bfffh - uncommitted
+C000h-Dfffh - uncommitted
+E000h-Ffffh - uncommitted
+```
+The SC-1 does not have an expansion scoket however the onboard 74HC138 memory decoder does offer all 8 chip select lines should you wish to add a'RAM Stack' similar to that of TE iussue 11. Just pick up the missing chip selects off IC2.
+
 ## Alternate approaches to memory mapping -- A discussion
 
-An alternate approach would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal approach unless you want to add yet another chip.
+##### This section is relevant mainly to users who whish to modify a classic TEC-1B or older; for the TEC-1F or SC everything here is already done for you.
+
+An alternate approach for memroy mapping on a classic TEC would be connecting A14 to pin 5 of the 74LS138 will expand the address 'wrap around' range so that only 8000h wraps. This allows for a 32k address space by only adding 1 wire. Connecting A15 via an inverter to pin 6 of the 74LS138 will fully decode the full 64k and prevent any wrap-around. The spare gate in the 4049 could be used for this purpose, but the oscillator module does not offer this option, so it is not an ideal approach unless you want to add yet another chip.
 
 To support larger size chips e.g. 8k 6264 RAM & 27C64 EPROM, simply pick higher address lines to decode. For example, to support the 8k chips (and to decode 8k blocks instead of 2k) - simply swap A11/12/13 for A13/14/15 instead. i.e. A13 to pin 1, A14 to pin 2 and A15 to pin 3 (of the '138). This automatically eliminates the 'wrap around' problem also, since the 8 outputs of the '138 then select 8 x 8k blocks, which is the entire 64k Z80 address space.
 
