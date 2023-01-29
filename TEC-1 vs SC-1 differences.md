@@ -22,7 +22,7 @@ Programmers will need to adjust use of memory, especially the code starting addr
 
 #### MONitor variables
 
-Most MONitors use some RAM for internal variables. If this meory is overwritten by software, the MONitor may behave strangely if your program exits, or after the machine is reset.
+Most MONitors use some RAM for internal variables. If this memory is overwritten by software, the MONitor may behave strangely if your program exits back to MONitor, or after the machine is reset.
 ````
 MON2 - 0800-08FFh
 JMON - 0800-08FFh
