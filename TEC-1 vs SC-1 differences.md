@@ -1,8 +1,12 @@
 # TEC-1 and SC-1 differences
 
-This is a list of differences between the TEC-1 and SC-1 computer, that would matter for a programmer trying to port code from one to the other.
+This is a list of differences between the TEC-1 and SC-1 computer, that would matter for a programmer trying to port code from one to the other or a hardware designer, designing a peripheral device.
 
-Whilst the hardware differences are significant (code won't run unaltered) the changes to adapt code are also fairly stright forward as the platforms are quite similar at the conceptual level.
+Whilst the hardware differences are noticeable (code won't run unaltered) the changes to adapt code are also fairly stright forward as the platforms are quite similar (roughly 95% the same) at the conceptual level.
+
+The TEC-1F alo brings the TEC-1 much closer to the SC-1 allowing the two platforms to share even greater commonality such as a common memory map, bitbanged serial IO option, scanned keyboard capability (avoiding the need for the now very rare 74C923 IC), whilst retaining classic TEC compatability where needed.
+
+I strongly urge anyone planning to develop for the TEC-1/SC-1 to use the TEC-1F as a starting point for future design.
 
 ## MONitor
 
