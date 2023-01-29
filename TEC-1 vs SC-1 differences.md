@@ -18,8 +18,28 @@ The TEC-1 prior to the 1F model uses 2k addressing; whereas the 1F and the SC1 u
 
 See https://github.com/tec1group/TechNotes/blob/main/Memory%20Map%20notes.md for detailed memory maps and further discussion.
 
-Programmers will need to adjust use of memory, especially the code starting address (0800h, 0900h or 2000h) to suit the target platform. This may involve re-writing JP instructions and where varaibles are stored, for example.
+Programmers will need to adjust use of memory, especially the code starting address (0800h, 0900h or 2000h) to suit the target platform. This may involve re-writing JP instructions and where variables are stored, for example.
 
+#### MONitor variables
+
+Most MONitors use some RAM for internal variables. If this meory is overwritten by software, the MONitor may behave strangely if your program exits, or after the machine is reset.
+````
+MON2 - 0800-08FFh
+JMON - 0800-08FFh
+SCMON - TOP 100h bytes of memory i.e. 3F00h - 3FFFFh
+`````
+
+The most obvious change here, is porting MON1 to MON2 or JMON requires re-writing code at 0900h instead of 0800h.
+
+#### Stack
+
+The stack location varies however the various MONitors manage this for you and are usually safe to ignore. If your code requires a large stack however, you may need to consider relocating this to .e.g. near top of memory as MON2 and JMON both have limited stack space set aside by default.
+````
+JMON  0820h - Stack Pointer. Maximum 20h bytes
+MON2  08c0h - Stack Pointer. Maximum C0h bytes
+MON1  0DF0h - Stack Pointer.
+SCMON (varies) - Just below top of RAM; typically 3E00h or 3FEEh. Exact location depends on MONitor version.
+````
 ## IO MAP
 
 The TEC uses IO ports 0,1 and 2 interrnally (also 3, 4 and 84h in JMON).
