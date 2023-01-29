@@ -13,6 +13,7 @@ Because A14 and A15 are not decoded, Address 4000h, 8000h and C000h 'wrap around
 2800h-2fffh - uncommitted
 3000h-37ffh - uncommitted
 3800h-3fffh - uncommitted
+4000h-47ffh - (Pattern repeats)
 ```
 
 Any uncommitted 2k block can be put to any purpose e.g. RAM Stack, NVRAM, E(E)PROM, TEC EPROM burner, etc.
