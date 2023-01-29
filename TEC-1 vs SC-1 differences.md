@@ -62,7 +62,7 @@ Keyboard handling is entirely different and discussed at https://github.com/tec1
 
 The overlap of JMON's use of port 84h for the LCD is a direct conflict with the SC1, however since the SC1 has no LCD display, this should not present an issue. Any LCD hardware implemented on the SC1 would simply use a differnet port and therefore would also need a code (IO port use) rewrite.
 
-#### The following code snippet shows the differences required for HEX characters dispalyed on the 7 segemnt displays on either atform
+#### The following code snippet shows the differences required for HEX characters dispalyed on the 7 segment displays on either platform
 
 ````asm
 HEXADECIMAL TO 7 SEGMENT DISPLAY CODE TABLE
