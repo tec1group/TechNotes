@@ -30,7 +30,7 @@ Most MONitors use some RAM for internal variables. If this memory is overwritten
 ````
 MON2 - 0800-08FFh
 JMON - 0800-08FFh
-SCMON - TOP 100h bytes of memory i.e. 3F00h - 3FFFFh
+SCMON - 3F00h-3FFFh
 `````
 
 The most obvious change here, is porting MON1 to MON2 or JMON requires re-writing code at 0900h instead of 0800h.
