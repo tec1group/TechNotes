@@ -87,17 +87,16 @@ SC-1
 ## Keyboard
 
 THe keyboard is the most nonstandard part of any TEC/SC, with numerous variations and options avilable:
-````
-TEC-1, No SHIFT key
-TEC-1A, With SHIFT key
-TEC-1B with JMON resistor
-TEC with DAT Board
-SC-1 with 74C923
-SC-1 with scanned keyboard (no 74C923)
-TEC-1F with scanned keyboard (no 74C923)
 
-The SC-1 does not have a SHIFT key.
-````
+- TEC-1, No SHIFT key
+- TEC-1A, With SHIFT key
+- TEC-1B with JMON resistor
+- TEC with DAT Board
+- SC-1 with 74C923
+- SC-1 with scanned keyboard (no 74C923)
+- TEC-1F with scanned keyboard (no 74C923)
+- The SC-1 does not have a SHIFT key
+
 See https://github.com/tec1group/TechNotes/blob/main/Keyboard%20Notes.md for detailed notes on keyboard use.
 
 ## Programmers Checklist
