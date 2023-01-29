@@ -27,14 +27,33 @@ See https://github.com/tec1group/TechNotes/blob/main/IO%20Port%20Maps.md for det
 
 There is a fairly straight forward relationship between port definitions, however the specific bit(s)of each port are redefined.
 
-TEC == SC
+````
+TEC    == SC
+port 2 == 85h => 7 seg segment select
+port 1 == 84h => 7 seg digit & speaker select
+port 0 == 86h => keyboard input
+````
 
-port 2 == 85h == 7 seg segment select
-port 1 == 84h == 7 seg digit & speaker select
-port 0 == 86h == keyboard input
+Note the mapping of display segments is different in the SC vs. the TEC and so a different table of which segements to light for any given character is needed.
 
-Note the mapping of display segments is different in the sC vs. the TEC and so a different table of which segementto light for any given character is needed.
+Keyboard handling is entirely different and discussed at https://github.com/tec1group/TechNotes/blob/main/Keyboard%20Notes.md
 
-Keyboard handling is entirely different and disussed at https://github.com/tec1group/TechNotes/blob/main/Keyboard%20Notes.md
 
+### The following code snippet shows the differences required for HEX characters dispalyed on the 7 segemnt displays on either atform
+
+````
+HEXADECIMAL TO 7 SEGMENT DISPLAY CODE TABLE
+
+TEC-1
+.DB 0EBH,28H,0CDH,0ADH  ;0,1,2,3
+.DB 2EH,0A7H,0E7H,29H ;4,5,6,7
+.DB 0EFH,2FH,6FH,0E6H ;8,9,A,B
+.DB 0C3H,0ECH,0C7H,47H  ;C,D,E,F
+
+SC-1
+.DB 3FH,06H,5BH,4FH ;0,1,2,3
+.DB 66H,6DH,7DH,07H ;4,5,6,7
+.DB 7FH,6FH,77H,7CH ;8,9,A,B
+.DB 39H,5EH,79H,71H ;C,D,E,F
+````
 
