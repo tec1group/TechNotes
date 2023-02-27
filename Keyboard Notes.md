@@ -49,7 +49,9 @@ JMON appears to use the RST 20h call to 'poll' the keyboard, and stores the read
 
 ### SC-1
 
-The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder chip, however it also differs in that an external keyboard buffer chip is added. The buffer chip allows the keyboard port to be polled rather than interrupt driven - the Z80's NMI line is not used for keyboard input. Also, the keyboard I/O port is accesible via port 86h on the SC-1. The FN, AD, + and - keys are in the opposite value-order compared to the TEC-1's AD, GO, + and - keys...another subtle design difference.
+The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder chip, however it also differs in that an external keyboard buffer chip is added. The buffer chip allows the keyboard port to be polled rather than interrupt driven - the Z80's NMI line is not used for keyboard input. The SCMON Monitor also supports a purely software scanned keyboard modification, eliminating the (hard to get) 74c923 chip, ut does require (another) rewrite of the keyboard code.
+
+The keyboard I/O port is accesible via port 86h on the SC-1. The FN, AD, + and - keys are in the opposite value-order compared to the TEC-1's AD, GO, + and - keys...another subtle design difference.
 
 | Key | TEC | SC |
 | ---- |:----:| ----:|
@@ -69,6 +71,10 @@ Port 86H:
 	bit 7	Data IN1 pin
 
 The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, except it tests bit 5=1 (of port 86h) to see if a key is being pressed (whereas JMON looks for bit 6=0).
+
+The SC-1 also has a series of system calls which are accesed via a RST 30h interface. These include keyboard routines which are hardware independent; the system calls support the TEC-1F and SC-1 with either software scanned or hardware(74c923) keyboards. This provides a universal approach and takes all the hard work out of programming the keyboard. 
+
+See the SC-1 Users Manual (available from the SC-1 GitHub repository) for further documentation on the various available system calls.
 
 
 ## The 74c923 chip vs. CPU Clock Speed (and keyboard false triggers)
@@ -182,9 +188,6 @@ My personal advice and approach - fit the JOMN resistor mod and use a polled key
 
 ### SC-1
 
-The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so I can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits.
+It is highly recommended to use the System Calls in SCMON (RST 30h interface) to access the keyboard as this provides complete hardare independence; however, if you want to do it the 'old' way:
 
-The SC-1 also has a series of system calls which are accesed via a RST 30h interface. These include keyboard routines which are hardware independent; the system calls support the TEC-1F and SC-1 with either software scanned or hardware(74c923) keyboards. This provides a universal approach and takes all the hard work out of programming the keyboard.
-
-See the SC-1 Users Manual (available from the SC-1 GitHub repository) for further documentation on the various available system calls.
-
+The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so I can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits. This only wrks for a 74c923 equipped SC-1 but not the software scanned keyboard.
