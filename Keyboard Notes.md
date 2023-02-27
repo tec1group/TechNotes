@@ -44,7 +44,9 @@ Note 1: Be aware that without the resistor-mod (and no DAT board) strange keyboa
 
 Note 2: If the TEC does not have the Shift key fitted JMON may assume that shift is pressed. This is because D5 is left floating (without shift fitted) and hence bit 5 may be read as logic 1 or 0 depending on how the Z80 sees the High-Z bus state. The result is continuous or random shifted-input values. To fix this, fit the Shift-key resistor (A 4K7 resistor between data bus bit D5 and +5v). Since JMON uses Shift heavily, you probably want to install the Shift key in any case.
 
-JMON appears to use the RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc.
+Note 3: The JMON resistor mod actually returns the keypressed state to ALL IO port reads for all ports: 00-FF! however because it is driven by a moderately high value resistor, it is a "weak" signal and will be easily overcome by a 'proper' TTL or CMOS logic gate; hence 'real' IO ports still return correct values when read.
+
+JMON uses the RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc. Hence software written for JMON should call RST 20h to get the keyboard state; this also allows the auto key-repeat feture of JMON to be used, if so desired.
 
 ### SC-1
 
