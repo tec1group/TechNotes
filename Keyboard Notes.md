@@ -93,9 +93,9 @@ The original design for keyboard input as described in Issue 11, was based aroun
 .....
 HALT
 CP 01
-JZ PRESSED_1
+JP Z, PRESSED_1
 CP 02
-JZ PRESSED_2
+JP Z, PRESSED_2
 ....
 ```
 The use of HALT as a keyboard input routine is used in programs such as 'Quick Draw' (Issue 11) and the 8x8 display training programs (Issue 11).
@@ -182,5 +182,9 @@ My personal advice and approach - fit the JOMN resistor mod and use a polled key
 
 ### SC-1
 
-The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so i can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits.
+The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so I can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits.
+
+The SC-1 also has a series of system calls which are accesed via a RST 30h interface. These include keyboard routines which are hardware independent; the system calls support the TEC-1F and SC-1 with either software scanned or hardware(74c923) keyboards. This provides a universal approach and takes all the hard work out of programming the keyboard.
+
+See the SC-1 Users Manual (available from the SC-1 GitHub repository) for further documentation on the various available system calls.
 
