@@ -16,14 +16,6 @@ The Shift-Key was not an original part of the design and early TEC's (TEC-1 and 
 
 What actually happens when a key is pressed varies quite a lot from one monitor to another.
 
-### MON-2
-
-The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual key value, in order ro "reset" the keyboard buffer to the not-pressed state.
-
-The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used (i.e. AND with 0x1F), test bit 6 for Shift, etc.
-
-This also means the MONitor assumes the Z80 data bass 'floats' at logic level 1 when any undefined bit is read. (port 0 bits 6 and 7 are not connected and so have no meaning).
-
 ### MON-1
 
 The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discards bits 5, 6 and 7) and stores it to the A and I registers. Both registers original contents are destroyed.
@@ -31,6 +23,14 @@ The NMI code at 0x0066 reads the keyboard value, ANDs it with 0x1F (i.e. discard
 It appears that the I register is intended to hold the keypress, and the overwriting of the A register is an unintentional bug (John Hardy, MON-1 author, confirms this).
 
 MON-1 Does not support the shift-key and pressing it does nothing due to the AND 0x1F instruction.
+
+### MON-2
+
+The NMI code at 0x0066 reads the keyboard value and stores it to memory at 0x08E0 (this is the keyboard buffer memory location). A value of 0xFF stored by the MONitor means 'no key pressed'. Any program code reading this location needs to reset it to 0xFF after reading the actual key value, in order ro "reset" the keyboard buffer to the not-pressed state.
+
+The byte in memory includes the shift-key state on bit 5, with bit 5=0 meaning shift is pressed. Note this "negative logic" state. Bits 6 and 7 are undefined, but the NMI code does not strip them out, meaning they probably need to be masked off by the programmer to ensure an accurate key value is being used (i.e. AND with 0x1F), test bit 6 for Shift, etc.
+
+This also means the MONitor assumes the Z80 data bass 'floats' at logic level 1 when any undefined bit is read. (port 0 bits 6 and 7 are not connected and so have no meaning).
 
 ### JMON
 
@@ -46,10 +46,9 @@ Note 2: If the TEC does not have the Shift key fitted JMON may assume that shift
 
 JMON appears to use the RST 20h call to 'poll' the keyboard, and stores the read value in the A register and in memory at 0820h, as well as setting various CPU flags (ZF, CF) to indicate the overall state - e.g. new keypress, repeat-key, etc.
 
-
 ### SC-1
 
-The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder chip, however it also differs in that an external keyboard buffer chip is added. The buffer chip allows the keyboard port to be polled rather than interrupt driven - the Z80's NMI line is not used for keyboard input. The SCMON Monitor also supports a purely software scanned keyboard modification, eliminating the (hard to get) 74c923 chip, ut does require (another) rewrite of the keyboard code.
+The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder chip, however it also differs in that an external keyboard buffer chip is added. The buffer chip allows the keyboard port to be polled rather than interrupt driven - the Z80's NMI line is not used for keyboard input. The SCMON Monitor also supports a purely software scanned keyboard modification, eliminating the (hard to get) 74c923 chip, but does require (another) rewrite of the keyboard code.
 
 The keyboard I/O port is accesible via port 86h on the SC-1. The FN, AD, + and - keys are in the opposite value-order compared to the TEC-1's AD, GO, + and - keys...another subtle design difference.
 
@@ -72,7 +71,7 @@ Port 86H:
 
 The SC-1 uses a purely polled keyboard keyboard interface, much as JMON does, except it tests bit 5=1 (of port 86h) to see if a key is being pressed (whereas JMON looks for bit 6=0).
 
-The SC-1 also has a series of system calls which are accesed via a RST 30h interface. These include keyboard routines which are hardware independent; the system calls support the TEC-1F and SC-1 with either software scanned or hardware(74c923) keyboards. This provides a universal approach and takes all the hard work out of programming the keyboard. 
+The SC-1 monitor SCMON has a series of system calls which are accesed via a RST 30h interface. These include keyboard routines which are hardware independent; the system calls support the TEC-1F and SC-1 with either software scanned or hardware(74c923) keyboards. This provides a universal approach and takes all the hard work out of programming the keyboard. 
 
 See the SC-1 Users Manual (available from the SC-1 GitHub repository) for further documentation on the various available system calls.
 
@@ -124,7 +123,6 @@ loop:           ld      a, 0ffh
 ```
 All that takes place here, is using the I register as a keyboard buffer. First, set I to an invalid value - 0FFh. Later, test the value of I. If I is still equal to 0FFh, then no key has been pressed. If however I has changed, it must be a keypress has occurreed, and the new value in I holds the value of the key pressed. This means also that the code inside (scan displays) cannot alter the I register - it is reserved exclusively as a keyboard buffer. The I register is defined in ROM by the keyboard interrupt handler code at 0066h and cannot be altered.
 
-
 ### MON-2
 
 MON-2 takes a similar interupt driven approach, with one main difference. The NMI code at 0066h stores the keyboard value read in memory at 08E0h, and no registers are altered. In other words, the use of the I register as a keyboard buffer has been replaced with memory location 08E0h. This means many MON-1 based routines in the early TE mags won't run properly under MON-2 since I and A no longer hold the key pressed value.
@@ -160,10 +158,9 @@ POP_HLAF:	pop hl
 ```		
 This code is a bit more elaborate as it processes the SHIFT key, however the principal is broadly similar: if the byte in memory at 08e0h is equal to ffh, no key is pressed. If it's different, process it to determine the pressed key + SHIFT, take action, and finally "clear" the keypress by writing ffh to 08e0h.
 
-
 ### JMON
 
-Execute a RST 20h instruction
+Execute a RST 20h instruction.
 
 Test the Carry flag. If set, a key is being pressed, and the key's value is in the A register and also placed in memory at 0820h.
 Test the Zero flag.  If set, it means the key is newly detected; if Zero flag is clear the key is 'repeating' (i.e. being held down)
@@ -188,6 +185,8 @@ My personal advice and approach - fit the JOMN resistor mod and use a polled key
 
 ### SC-1
 
-It is highly recommended to use the System Calls in SCMON (RST 30h interface) to access the keyboard as this provides complete hardare independence; however, if you want to do it the 'old' way:
+Execute a Keyboard System Call with RST 30h
 
-The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so I can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits. This only wrks for a 74c923 equipped SC-1 but not the software scanned keyboard.
+It is highly recommended to use the System Calls in SCMON to access the keyboard as this provides complete hardare independence; however, if you want to do it the 'old' way:
+
+The SC-1 already uses the polled approach, so just change the IO port and data-bit being tested. I tend to use a conditional-define for this purpose so I can compile for one machine or the other, but you can easily change your code to just check IO port 86h instead of 00h, and mask off/bit-test the right bits. This only works for a 74c923 equipped SC-1 but not the software scanned keyboard.
