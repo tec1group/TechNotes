@@ -51,6 +51,15 @@ JMON appears to use the RST 20h call to 'poll' the keyboard, and stores the read
 
 The Southern Cross SC-1 borrows from the TEC-1 design, employing the same 74c923 keyboard encoder chip, however it also differs in that an external keyboard buffer chip is added. The buffer chip allows the keyboard port to be polled rather than interrupt driven - the Z80's NMI line is not used for keyboard input. Also, the keyboard I/O port is accesible via port 86h on the SC-1. The FN, AD, + and - keys are in the opposite value-order compared to the TEC-1's AD, GO, + and - keys...another subtle design difference.
 
+| Key | TEC | SC |
+| ---- |:----:| ----:|
+| 0..F | 0..F | 0..F |
+|  + | 10 | 12 |
+|  - | 11 | 13 |
+| Fn | -- | 10 |
+| AD | 13 | 11 |
+| GO | 12 | -- |
+
 The SC-1 does not have a SHIFT key, instead leveraging the Fn key as a 'command mode' key - the key pressed following Fn then executes one of a number of special functions.
 
 Port 86H:
