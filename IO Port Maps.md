@@ -80,6 +80,7 @@ The 74HC138 decodes address lines A7 (high), A6 (low) and A0-2 (port select). Th
 #### Ports 80h to 83h - uncommitted - available on the I/O port expansion connector
 
 ROM Routine Fn + E assumes there are two 8x8 display modules connected at ports 80h-81h and 82h-83h and displays a scrolling message on the 8x8 displays.
+ROM routine Fn + D assumes there is an 8 port relay board on port 81h; it cycles the relays on and off in a testing pattern.
 
 #### Port 84h - 7-seg Segment select output
  - bit 0	segment g
@@ -91,7 +92,7 @@ ROM Routine Fn + E assumes there are two 8x8 display modules connected at ports 
  - bit 6	segment b
  - bit 7	segment a
 
-Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
+Note that the segment order is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
 
 #### Port 85h - 7-seg Digit select, Data and Speaker outputs
  - bits 5-0 select seach 7-segment display, bit 5 = left, bit 0 = right
