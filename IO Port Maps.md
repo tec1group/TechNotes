@@ -8,10 +8,10 @@ With the DAT board (and JMON), ports 3, 4 & 84h are additonally defined.
 NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally be changed easily to support any port available in hardware as the MONitors don't touch these ports in any way.
 
 #### Port 0 - Keyboard data input:
- - bits 0-4 -- keypressed value from the 74c923<br>
- - bit 5 - low = Shift pressed (Mon2 +)<br>
- - bit 6 - low = Key pressed - used by JMON with 4K7 resistor mod only<br>
- - bit 7 - not connected<br>
+ - bits 0-4 -- keypressed value from the 74c923
+ - bit 5 - low = Shift pressed (Used by Mon2 +)
+ - bit 6 - low = Key pressed - used only by JMON with 4k7 resistor mod or DAT board
+ - bit 7 - not connected
 
 #### Port 1 - 7-seg Display select & speaker (& JMON tape out) output
  - bits 5-0 select seach 7-segment display, bit 5 = left, bit 0 = right
@@ -19,14 +19,14 @@ NB: Many TEC add ons used various ports (3 & 4 mostly) but the code can normally
  - bit  7 - speaker output & tape output (tape --- JMON with DAT board only)
 
 #### Port 2 - 7-seg segment select output
- - bit 0	segment a<br>
- - bit 1	segment f<br>
- - bit 2	segment g<br>
- - bit 3	segment b<br>
- - bit 4	decimal point<br>
- - bit 5	segment c<br>
- - bit 6	segment e<br>
- - bit 7	segment d<br>
+ - bit 0	segment a
+ - bit 1	segment f
+ - bit 2	segment g
+ - bit 3	segment b
+ - bit 4	decimal point
+ - bit 5	segment c
+ - bit 6	segment e
+ - bit 7	segment d
 
 Segments are defined as per the FND-500 7-segment display specification.
 
@@ -82,6 +82,15 @@ The 74HC138 decodes address lines A7 (high), A6 (low) and A0-2 (port select). Th
 ROM Routine Fn + E assumes there are two 8x8 display modules connected at ports 80h-81h and 82h-83h and displays a scrolling message on the 8x8 displays.
 
 #### Port 84h - 7-seg Segment select output
+ - bit 0	segment g
+ - bit 1	segment f
+ - bit 2	segment c
+ - bit 3	segment d
+ - bit 4	segment e
+ - bit 5	decimal point
+ - bit 6	segment b
+ - bit 7	segment a
+
 Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
 
 #### Port 85h - 7-seg Digit select, Data and Speaker outputs
@@ -97,7 +106,7 @@ Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any L
 
 #### Port 87h - Optional single-stepper hardware
 
- - writing any value or reading from this port toggles the advanced single-stepper [if built per the SC-1 manual] on and off.
+ - writing any value or reading from this port toggles the advanced single-stepper hardware [if built per the SC-1 manual] on and off.
 
 ### A word from Craig Jones, Designer of the SC-1
 
