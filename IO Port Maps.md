@@ -82,11 +82,22 @@ The 74HC138 decodes address lines A7 (high), A6 (low) and A0-2 (port select). Th
 ROM Routine Fn + E assumes there are two 8x8 display modules connected at ports 80h-81h and 82h-83h and displays a scrolling message on the 8x8 displays.
 
 #### Port 84h - 7-seg Segment select output
+Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
+
 #### Port 85h - 7-seg Digit select, Data and Speaker outputs
-#### Port 86h - Keyboard data input
+ - bits 5-0 select seach 7-segment display, bit 5 = left, bit 0 = right
+ - bit  6 - Data out - Serial transmit
+ - bit  7 - speaker output
+
+#### Port 86h - Keyboard buffer data input
+ - bits 0-4 -- keypressed value from the 74c923
+ - bit 5 - high = Key pressed - read from the 74c923
+ - bit 6 - Data IN2 - bitbang serial receive
+ - bit 7 - Data IN1
+
 #### Port 87h - Optional single-stepper hardware
 
-Note that the segment order port-bit is different in the SC-1 vs. the TEC. Any Lookup tables can be re-written easily to adapt one design to the other.
+ - writing any value or reading from this port toggles the advanced single-stepper [if built per the SC-1 manual] on and off.
 
 ### A word from Craig Jones, Designer of the SC-1
 
