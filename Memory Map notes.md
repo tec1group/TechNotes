@@ -185,9 +185,50 @@ It's basically 3 byte JP instruction (C3 XX XX)
 0845h  JMON soft entry point
 0848h  LCD routine
 
-084Bh  user patch 1
-084Eh  user patch 2
-0850h  user patch 3
+084Bh  user patch 1 (3 byte JP)
+084Eh  user patch 2 (3 byte JP)
+0850h  user patch 3 (3 byte JP)
+
+#### Stepper variables
+
+0858/9h  Last PC buffer
+0860/1h  re-entry address
+0868/9h  Next PC buffer
+086A/Bh  AF
+086C/Dh  BC
+086E/Fh  DE
+0870/1h  HL
+0872/3h  IX'
+0874/5h  IY'
+0876/7h  AF'
+0878/9h  BC'
+087A/Bh  DE'
+087C/Dh  Hl'
+087E/Fh  SP
+
+#### parameter handler variables
+
+0882/3h  base address of data display table
+0884/5h  address of first (file) window+1
+0886h  number of active window
+
+#### tape routines working area
+
+088Ah  tape current operation (load save etc.)
+088Fh  tape speed,  0 = high speed
+
+0898/9h  file number required to load FFFF = load next
+089A/Bh  optional load memory location; FFFF = load using info block start (08A6) otherwise load here
+
+089C/Dh  end of block input by user during save
+089E/Fh  optional go address entered by user (copied to file info block during save)
+
+08A4h-08FFh  tape file info block (12 bytes long), as follows:
+  08A4/5h  tape file number of this file
+  08A6/7h  tape memory start location
+  08A8/9h  tape number of bytes
+  08AA/Bh  tape auto-GO address, FFFF if no auto-go needed
+  08AFh  tape checksum byte
 
 #### JMON Flags
 
