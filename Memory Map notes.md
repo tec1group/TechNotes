@@ -151,5 +151,50 @@ Similarly, as the stack grows downwards it will reach ROM space first, meaning a
 0800h - 08FFh - MONitor variables and stack
 0900h - User RAM start
 
-0820h - Stack Pointer - Maximum 20h bytes
+#### JMON variables
+
+0800h-0805h - JMON 7-seg display buffer (6 bytes)
+0806h-0820h - Stack - Maximum 1Ah bytes (Remember stack grows downwards towards 0806h, SP decements 2 bytes before push)
+0820h - key buffer
+0821h - LCD on/off flag
+0822h - sound on/off flag
+0823h - GO key lauches alternate address (stored at 0828/9h) if = AAh
+0825h - key press flag
+0826h  - unused
+0827h - auto increment on/off
+0828/9h - alternative GO address / soft reset edit location
+082Ah - key status byte
+082Bh - monitor conntrol byte 0=data mode
+082C/Dh - display buffer address (pointer to 6 byte buffer holding the 7-seg values)
+082E/Fh - monitor edit location - used for editing, data entry etc
+
+#### JMON Vectors
+
+From 0830h onwards are vectors that can be patched to replace built-in JMON functions with user-code
+JMON calls these "patches".
+
+It's basically 3 byte JP instruction (C3 XX XX)
+
+0830h  HL -> display code
+0833h  A -> display code
+0836h  7-seg scan
+0839h  7-seg set dots (Addr or Data mode)
+083Ch  reset tones
+083Fh  tone
+0842h  JMON 7-seg scan/key/LCD 'user input' loop
+0845h  JMON soft entry point
+0848h  LCD routine
+
+084Bh  user patch 1
+084Eh  user patch 2
+0850h  user patch 3
+
+#### JMON Flags
+
+086Eh - stores value of HL upon reset
+08FFh - reset flag. soft reset if = AAh
+
+#### JMON Utilities ROM
+
+3800h - contains C3h if utilities ROM is installed (first byte of a JP instruction that is called by JMON to initilize the utilties, if found)
 ```
